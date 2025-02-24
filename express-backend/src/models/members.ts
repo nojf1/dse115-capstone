@@ -1,9 +1,17 @@
-import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/db"; // Import the Sequelize instance
+// Models are used to interact with the database, part of the MVC structure
+// The model is used to interact with the database, such as querying, inserting, updating, and deleting data
+// U can think of it as a class that represents a table in the database
 
-// Define an interface for the model
+// Sequelize is an ORM (Object-Relational Mapping) library that simplifies the interaction with databases
+// It allows you to define models that represent tables in the database
+// Sequelize's Model class is used to define models, DataTypes is used to define the data types of the columns
+
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "../config/db";
+
+// Extend attributes to include is_admin
 interface MemberAttributes {
-  member_id?: number; // Auto-incremented primary key
+  member_id?: number;
   first_name: string;
   last_name: string;
   email: string;
@@ -14,10 +22,10 @@ interface MemberAttributes {
   state: string;
   postal_code: string;
   country: string;
+  is_admin?: boolean; // New admin column
   created_at?: Date;
 }
 
-// Extend Sequelize's Model class
 class Member extends Model<MemberAttributes> implements MemberAttributes {
   public member_id!: number;
   public first_name!: string;
@@ -30,10 +38,10 @@ class Member extends Model<MemberAttributes> implements MemberAttributes {
   public state!: string;
   public postal_code!: string;
   public country!: string;
+  public is_admin!: boolean;
   public readonly created_at!: Date;
 }
 
-// Initialize the model
 Member.init(
   {
     member_id: {
@@ -82,6 +90,11 @@ Member.init(
       type: DataTypes.STRING(100),
       allowNull: false,
     },
+    is_admin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false, // Default to non-admin
+    },
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -89,9 +102,9 @@ Member.init(
     },
   },
   {
-    sequelize, // Database connection instance
-    tableName: "members", // Explicitly set the table name
-    timestamps: false, // Since created_at is already defined manually
+    sequelize,
+    tableName: "members",
+    timestamps: false,
   }
 );
 
