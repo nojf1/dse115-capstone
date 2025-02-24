@@ -44,14 +44,13 @@ export const registerMember = async (req: Request, res: Response) => {
 
     // Remove password from response
     const { password: _, ...memberWithoutPassword } = newMember.toJSON();
-    res.status(201).json({
-      message: "Member registered successfully!",
-      member: memberWithoutPassword,
-    });
 
-    res
-      .status(201)
-      .json({ message: "Member registered successfully!", member: newMember });
+        // Send single response
+        return res.status(201).json({
+          message: "Member registered successfully!",
+          member: memberWithoutPassword,
+        });
+
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
@@ -98,6 +97,138 @@ export const loginMember = async (req: Request, res: Response) => {
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
+    res.status(500).json({ message: "Server error", error: errorMessage });
+  }
+};
+
+// Get member profile
+export const getMemberProfile = async (req: Request, res: Response) => {
+  try {
+    const memberId = req.user?.id; // Get ID from JWT token
+
+    if (!memberId) {
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
+
+    const member = await Member.findByPk(memberId);
+    
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    // Remove password from response
+    const { password: _, ...memberWithoutPassword } = member.toJSON();
+
+    res.status(200).json({
+      message: "Profile retrieved successfully",
+      member: memberWithoutPassword,
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    res.status(500).json({ message: "Server error", error: errorMessage });
+  }
+};
+
+// Get all members (admin only)
+export const getAllMembers = async (req: Request, res: Response) => {
+  try {
+    // Check if user is admin
+    if (!req.user?.isAdmin) {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+
+    const members = await Member.findAll({
+      attributes: { exclude: ['password'] } // Exclude password from results
+    });
+
+    res.status(200).json({
+      message: "Members retrieved successfully",
+      members
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    res.status(500).json({ message: "Server error", error: errorMessage });
+  }
+};
+
+// Update member profile
+export const updateMember = async (req: Request, res: Response) => {
+  try {
+    const memberId = req.user?.id;
+    const {
+      first_name,
+      last_name,
+      phone,
+      address,
+      city,
+      state,
+      postal_code,
+      country,
+    } = req.body;
+
+    // Check authorization
+    if (!memberId) {
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
+
+    const member = await Member.findByPk(memberId);
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    // Update member
+    await member.update({
+      first_name: first_name || member.first_name,
+      last_name: last_name || member.last_name,
+      phone: phone || member.phone,
+      address: address || member.address,
+      city: city || member.city,
+      state: state || member.state,
+      postal_code: postal_code || member.postal_code,
+      country: country || member.country,
+    });
+
+    // Remove password from response
+    const { password: _, ...memberWithoutPassword } = member.toJSON();
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      member: memberWithoutPassword,
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    res.status(500).json({ message: "Server error", error: errorMessage });
+  }
+};
+
+// Delete member (admin only or self)
+export const deleteMember = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const requestingUserId = req.user?.id;
+    const isAdmin = req.user?.isAdmin;
+
+    if (!requestingUserId) {
+      return res.status(401).json({ message: "Unauthorized access" });
+    }
+
+    // Check if user is admin or deleting their own account
+    if (!isAdmin && requestingUserId !== parseInt(id)) {
+      return res.status(403).json({ message: "Permission denied" });
+    }
+
+    const member = await Member.findByPk(id);
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    await member.destroy();
+
+    res.status(200).json({
+      message: "Member deleted successfully"
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     res.status(500).json({ message: "Server error", error: errorMessage });
   }
 };

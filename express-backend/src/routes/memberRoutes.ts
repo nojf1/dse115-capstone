@@ -1,17 +1,20 @@
 import { Router } from "express";
-import { registerMember, loginMember } from "../controllers/memberController";
+import { registerMember, loginMember, getMemberProfile, getAllMembers, updateMember, deleteMember } from "../controllers/memberController";
 import { authMiddleware } from "../middleware/auth";
 
 const router = Router();
+
+
 
 // Define member registration route
 router.post("/register", registerMember);
 // Define member login route
 router.post("/login", loginMember);
 
-// Protected route
-router.get("/profile", authMiddleware, (req, res) => {
-  res.json({ user: req.user });
-});
+// Protected routes
+router.get("/profile", authMiddleware, getMemberProfile);
+router.get("/all", authMiddleware, getAllMembers); // Admin only route
+router.put("/update", authMiddleware, updateMember);
+router.delete("/:id", authMiddleware, deleteMember); // Admin only or own account
 
 export default router;
