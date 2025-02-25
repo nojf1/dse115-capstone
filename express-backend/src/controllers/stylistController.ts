@@ -39,7 +39,7 @@ export const createStylist = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Name is required" });
     }
 
-    let profile_picture = null;
+    let profile_picture: string | undefined = undefined;
     if (req.file) {
       profile_picture = `/uploads/stylists/${req.file.filename}`;
     }

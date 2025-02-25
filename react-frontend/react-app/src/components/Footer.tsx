@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import timelessstyle from "../assets/timeless-style.png";
 
 const Footer = () => {
   return (
@@ -9,12 +10,12 @@ const Footer = () => {
         <div className="row">
           {/* Left Section: Slogan & Terms */}
           <div className="col-md-3">
-            <h5>
-              <strong>STYLE WITH CONFIDENCE.</strong>
-            </h5>
-            <a href="#" className="text-decoration-none text-dark">
-              Terms & Conditions
-            </a>
+          <img 
+            src={timelessstyle} 
+            alt="Timeless Style Logo" 
+            height="100" 
+            className="me-2"
+            />
           </div>
 
           {/* Center Section: Address */}
@@ -69,7 +70,9 @@ const Footer = () => {
             </a>
             <br />
             <br />
-            <img src="/logo.png" alt="Timeless Style Logo" width="120" />
+            <Link className="text-decoration-none text-dark" to="/terms">
+              Terms & Conditions
+            </Link>
           </div>
         </div>
 

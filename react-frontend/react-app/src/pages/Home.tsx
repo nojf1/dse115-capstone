@@ -1,52 +1,47 @@
 import { Link } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../App.css";
+import timelessstyle2 from "../assets/timeless-style-2.png";
+import salonbg from "../assets/salonbg.jpeg";
 
 const Home = () => {
   return (
     <div className="home-page">
       {/* Hero Section */}
-      <section className="hero text-center text-white py-5 bg-dark">
+      <section
+        className="hero text-center text-white py-5"
+        style={{
+          backgroundImage: `url(${salonbg})`, // Change image here, remember to import it first
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          minHeight: "80vh",
+        }}
+      >
         <div className="container">
-          <h1 className="display-4 fw-bold">Timeless Style Hair Salon</h1>
-          <p className="lead">Transform your look with our expert stylists.</p>
-          <Link to="/booking" className="btn btn-primary btn-lg mt-3">
-            Book an Appointment
+          <img
+            src={timelessstyle2}
+            alt="Timeless Style Logo"
+            height="200"
+            className="me-2"
+          />
+          <p className="lead"></p> <br></br>
+          <Link
+            style={{ textDecoration: "none", color: "black" }}
+            to="/booking"
+          >
+            {" "}
+            <button className="custom-button">Book an Appointment</button>
           </Link>
         </div>
       </section>
 
-      {/* Services Section */}
+      {/* Video Section */}
       <section className="services py-5 text-center">
         <div className="container">
-          <h2 className="mb-4">Our Services</h2>
-          <div className="row">
-            <div className="col-md-4">
-              <div className="card shadow-sm">
-                <div className="card-body">
-                  <h3 className="card-title">Haircuts</h3>
-                  <p className="card-text">Professional haircuts for all styles and occasions.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="card shadow-sm">
-                <div className="card-body">
-                  <h3 className="card-title">Coloring</h3>
-                  <p className="card-text">Premium hair coloring by expert stylists.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="card shadow-sm">
-                <div className="card-body">
-                  <h3 className="card-title">Hair Treatment</h3>
-                  <p className="card-text">Revitalize your hair with our nourishing treatments.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <Link to="/services" className="btn btn-outline-primary mt-4">
-            View All Services →
-          </Link>
+          <h2 className="mb-4">More than style, we care - bringing beauty and happiness to you!</h2>
+          <hr/>
+          <iframe width="920" height="460" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Rick Astley - Never Gonna Give You Up (Official Music Video)" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
         </div>
       </section>
 
@@ -56,13 +51,25 @@ const Home = () => {
           <h2 className="mb-4">Style Inspiration</h2>
           <div className="row">
             <div className="col-md-4">
-              <img src="/uploads/style1.jpg" alt="Style 1" className="img-fluid rounded shadow" />
+              <img
+                src="/uploads/style1.jpg"
+                alt="Style 1"
+                className="img-fluid rounded shadow"
+              />
             </div>
             <div className="col-md-4">
-              <img src="/uploads/style2.jpg" alt="Style 2" className="img-fluid rounded shadow" />
+              <img
+                src="/uploads/style2.jpg"
+                alt="Style 2"
+                className="img-fluid rounded shadow"
+              />
             </div>
             <div className="col-md-4">
-              <img src="/uploads/style3.jpg" alt="Style 3" className="img-fluid rounded shadow" />
+              <img
+                src="/uploads/style3.jpg"
+                alt="Style 3"
+                className="img-fluid rounded shadow"
+              />
             </div>
           </div>
           <Link to="/gallery" className="btn btn-outline-dark mt-4">
@@ -78,7 +85,9 @@ const Home = () => {
           <div className="row">
             <div className="col-md-6">
               <div className="p-4 border rounded bg-white shadow-sm">
-                <p>"The best haircut I've ever had! The stylists are amazing."</p>
+                <p>
+                  "The best haircut I've ever had! The stylists are amazing."
+                </p>
                 <strong>- Jane Doe</strong>
               </div>
             </div>
