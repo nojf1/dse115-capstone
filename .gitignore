@@ -25,3 +25,6 @@ npm-debug.log*
 # Operating System Files
 .DS_Store
 Thumbs.db
+
+# Uploaded files
+uploads/
