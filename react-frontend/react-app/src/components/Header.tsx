@@ -60,9 +60,7 @@ const Header = () => {
           </button>
           <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
             <li><Link className="dropdown-item" to="/profile">Profile</Link></li>
-            <li><hr className="dropdown-divider" /></li>
             <li><Link className="dropdown-item" to="/login">Login</Link></li>
-            <li><hr className="dropdown-divider" /></li>
             <li><Link className="dropdown-item" to="/register">Register</Link></li>
           </ul>
         </div>
