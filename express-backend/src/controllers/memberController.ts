@@ -217,14 +217,15 @@ export const deleteMember = async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Permission denied" });
     }
 
+    // Check if member exists by finding member in db by primary key id
     const member = await Member.findByPk(id);
-    if (!member) {
+    if (!member) { // If no member is found display this message
       return res.status(404).json({ message: "Member not found" });
     }
 
-    await member.destroy();
+    await member.destroy(); // Deletes member in db
 
-    res.status(200).json({
+    res.status(200).json({ // Message for successful delete
       message: "Member deleted successfully"
     });
   } catch (error) {

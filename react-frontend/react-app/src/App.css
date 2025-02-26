@@ -60,3 +60,158 @@
   
   z-index: -1;
 }
+
+
+/* image loading */
+.card-img-wrapper {
+  background-color: #f8f9fa;
+  position: relative;
+}
+
+.image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+}
+
+.card-img-top.hide {
+  opacity: 0;
+}
+
+.card-img-top.show {
+  opacity: 1;
+}
+
+/* About section */
+.about-section {
+  background-color: #121212; 
+  padding: 40px;
+  border: 6px solid #e3c667; 
+  border-radius: 12px;
+}
+
+.text-gold {
+  color: #d4af37; 
+}
+
+.about-section h2,
+.about-section h4,
+.about-section p,
+.about-section ul {
+  color: white;
+}
+
+.about-section ul li {
+  margin-bottom: 10px; 
+}
+
+
+/* Services Page Styles */
+.service-category-title {
+  position: relative;
+  color: #333;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.service-category-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background-color: #212529;
+}
+
+.service-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.service-price {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 1rem 0;
+}
+
+.service-card .btn {
+  transition: all 0.3s ease;
+}
+
+.service-card .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Products Page Styles */
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.product-price {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 1rem 0;
+}
+
+.product-image-wrapper img {
+  transition: transform 0.3s ease;
+}
+
+.product-image-wrapper:hover img {
+  transform: scale(1.05);
+}
+
+.product-detail-image {
+  max-height: 300px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.product-details {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+  display: block;
+}
+
+.btn-group .btn {
+  transition: all 0.3s ease;
+}
+
+.btn-group .btn:hover {
+  transform: translateY(-2px);
+}

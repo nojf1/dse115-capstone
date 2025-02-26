@@ -2,12 +2,21 @@ import { Request, Response } from "express";
 import Stylist from "../models/stylists";
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 
 // Configure multer for profile picture upload
 const storage = multer.diskStorage({
-  destination: './uploads/stylists',
+  destination: (req, file, cb) => {
+    // Create directory if it doesn't exist
+    const dir = './uploads/stylists';
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    cb(null, dir);
+  },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, `${uniqueSuffix}-${file.originalname}`);
   }
 });
 
@@ -26,29 +35,24 @@ export const upload = multer({
   }
 });
 
-// Create new stylist with image upload (admin only)
+// Create new stylist (admin only)
 export const createStylist = async (req: Request, res: Response) => {
   try {
     if (!req.user?.isAdmin) {
       return res.status(403).json({ message: "Admin access required" });
     }
 
-    const { name, expertise, experience_years } = req.body;
+    const { name, expertise, experience_years, profile_picture } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: "Name is required" });
-    }
-
-    let profile_picture: string | undefined = undefined;
-    if (req.file) {
-      profile_picture = `/uploads/stylists/${req.file.filename}`;
     }
 
     const newStylist = await Stylist.create({
       name,
       expertise,
       experience_years,
-      profile_picture,
+      profile_picture, // Now accepts URL directly
     });
 
     res.status(201).json({
@@ -61,7 +65,7 @@ export const createStylist = async (req: Request, res: Response) => {
   }
 };
 
-// Update stylist with image (admin only)
+// Update stylist (admin only)
 export const updateStylist = async (req: Request, res: Response) => {
   try {
     if (!req.user?.isAdmin) {
@@ -69,23 +73,18 @@ export const updateStylist = async (req: Request, res: Response) => {
     }
 
     const { id } = req.params;
-    const { name, expertise, experience_years } = req.body;
+    const { name, expertise, experience_years, profile_picture } = req.body;
 
     const stylist = await Stylist.findByPk(id);
     if (!stylist) {
       return res.status(404).json({ message: "Stylist not found" });
     }
 
-    let profile_picture = stylist.profile_picture;
-    if (req.file) {
-      profile_picture = `/uploads/stylists/${req.file.filename}`;
-    }
-
     await stylist.update({
       name: name || stylist.name,
       expertise: expertise || stylist.expertise,
       experience_years: experience_years || stylist.experience_years,
-      profile_picture: profile_picture,
+      profile_picture: profile_picture || stylist.profile_picture,
     });
 
     res.status(200).json({
