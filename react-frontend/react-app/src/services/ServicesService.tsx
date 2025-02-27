@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from './MemberService';
+import { memberService, api } from '../services/MemberService';
 
 interface ServiceData {
   service_id?: number;

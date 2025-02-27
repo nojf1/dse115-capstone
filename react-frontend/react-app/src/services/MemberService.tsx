@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api';
-
-const api = axios.create({
-  baseURL: API_URL,
+// Create axios instance with base configuration
+export const api = axios.create({
+  baseURL: 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -45,14 +44,15 @@ export const memberService = {
     try {
       const response = await api.post('/members/login', { email, password });
       if (response.data.token) {
-        console.log('Login response:', response.data); // Debug log
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.member));
+        // Set authorization header for future requests
+        api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       }
       return response.data;
-    } catch (error) {
-      console.error('Login error:', error); // Debug log
-      throw error;
+    } catch (error: any) {
+      console.error('Login error:', error);
+      throw new Error(error.response?.data?.message || 'Failed to login');
     }
   },
 
@@ -81,6 +81,10 @@ export const memberService = {
   getProfile: async () => {
     try {
       const response = await api.get('/members/profile');
+      if (response.data.member) {
+        // Update localStorage with fresh data
+        localStorage.setItem('user', JSON.stringify(response.data.member));
+      }
       return response.data;
     } catch (error) {
       throw error;
@@ -100,9 +104,15 @@ export const memberService = {
   }) => {
     try {
       const response = await api.put('/members/update', updateData);
+      // Update local storage with new user data
+      if (response.data.member) {
+        const updatedUser = response.data.member;
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
       return response.data;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      console.error('Update profile error:', error);
+      throw new Error(error.response?.data?.message || 'Failed to update profile');
     }
   },
 
@@ -119,10 +129,25 @@ export const memberService = {
   // Get all members (admin only)
   getAllMembers: async (): Promise<MemberResponse> => {
     try {
-      const response = await api.get('/members/all');
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await api.get('/members/all', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!response.data || !response.data.members) {
+        throw new Error('Invalid response format');
+      }
+
       return response.data;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      console.error('Error fetching members:', error);
+      throw new Error(error.response?.data?.message || 'Failed to fetch members');
     }
   },
 
@@ -149,7 +174,25 @@ export const memberService = {
   isAdmin: () => {
     const user = memberService.getCurrentUser();
     return user?.isAdmin || false;
+  },
+  
+  async forgotPassword(email: string) {
+    try {
+      const response = await api.post('/members/forgot-password', { email });
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to send reset email');
+    }
+  },
+  
+  resetPassword: async (token: string, password: string) => {
+    try {
+      const response = await api.post(`/members/reset-password/${token}`, { password });
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to reset password');
+    }
   }
 };
 
-export default api;
+export default memberService;

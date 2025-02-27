@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { memberService } from '../services/MemberService';
+import { memberService, api } from '../services/MemberService';
 
 interface AuthContextType {
   user: any;
@@ -14,7 +14,10 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<any>(() => {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -33,10 +36,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await memberService.login(email, password);
-    setUser(response.member);
-    setIsAuthenticated(true);
-    setIsAdmin(response.member.is_admin); // Make sure to use is_admin not isAdmin
+    try {
+      const response = await memberService.login(email, password);
+      const userData = response.member;
+      setUser(userData);
+      setIsAuthenticated(true);
+      setIsAdmin(response.member.is_admin); // Make sure to use is_admin not isAdmin
+    } catch (error) {
+      throw error;
+    }
   };
 
   const logout = () => {

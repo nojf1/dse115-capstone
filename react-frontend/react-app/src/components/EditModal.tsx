@@ -1,13 +1,12 @@
 import React from 'react';
-import { Member, Service, Stylist, Appointment } from '../types';
-import { GalleryImage } from '../types';
+import { Member, Service, Stylist, Appointment, GalleryImage } from '../types';
 
 interface EditModalProps {
   show: boolean;
   onClose: () => void;
   onSave: (data: Member | Service | Stylist | Appointment | GalleryImage) => void;
   item: Member | Service | Stylist | Appointment | GalleryImage | null;
-  type: 'member' | 'service' | 'stylist' | 'appointment' | 'gallery';
+  type: 'member' | 'service' | 'stylist' | 'appointment' | 'gallery'; 
   isCreating: boolean;
 }
 
@@ -47,19 +46,32 @@ type FormDataType = {
 };
 
 const EditModal: React.FC<EditModalProps> = ({ show, onClose, onSave, item, type, isCreating }) => {
-  const [formData, setFormData] = React.useState<FormDataType>(() => {
-    if (isCreating && type === 'gallery') {
-      return {
-        image_url: '',
-        caption: ''
-      };
-    }
-    return item || {};
-  });
+    const [formData, setFormData] = React.useState<FormDataType>(() => ({
+        id: item && 'id' in item ? item.id : undefined,
+        image_url: item && 'image_url' in item ? item.image_url : "",
+        caption: item && 'caption' in item ? item.caption : "",
+      }));
 
-  React.useEffect(() => {
-    setFormData(item || {});
-  }, [item]);
+      React.useEffect(() => {
+        console.log("EditModal effect triggered", { type, item });
+      
+        if (item && type === "gallery") {
+          setFormData({
+            id: 'id' in item ? item.id : undefined,
+            image_url: 'image_url' in item ? item.image_url : "",
+            caption: 'caption' in item ? item.caption : "",
+          });
+        } else if (isCreating && type === "gallery") {
+          setFormData({
+            image_url: "",
+            caption: "",
+          });
+        } else if (item) {
+          setFormData(item);
+        }
+      }, [item, type, isCreating]);
+      
+  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -261,12 +273,12 @@ const EditModal: React.FC<EditModalProps> = ({ show, onClose, onSave, item, type
   const renderGalleryForm = () => (
     <>
       <div className="mb-3">
-        <label className="form-label">Image URL</label>
+        <label className="form-label">Image URL*</label>
         <input
           type="url"
           className="form-control"
           name="image_url"
-          value={formData.image_url || ''}
+          value={formData.image_url || ""}
           onChange={handleInputChange}
           required
           placeholder="https://example.com/image.jpg"
@@ -277,7 +289,12 @@ const EditModal: React.FC<EditModalProps> = ({ show, onClose, onSave, item, type
               src={formData.image_url}
               alt="Preview"
               className="img-thumbnail"
-              style={{ maxHeight: '200px' }}
+              style={{ maxHeight: "200px" }}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "placeholder-image-url";
+                target.alt = "Image failed to load";
+              }}
             />
           </div>
         )}
@@ -288,15 +305,20 @@ const EditModal: React.FC<EditModalProps> = ({ show, onClose, onSave, item, type
           type="text"
           className="form-control"
           name="caption"
-          value={formData.caption || ''}
+          value={formData.caption || ""}
           onChange={handleInputChange}
           placeholder="Enter image caption"
         />
       </div>
     </>
   );
+  
+  
 
   const renderForm = () => {
+    console.log('Rendering form for type:', type);
+    console.log('Form data:', formData);
+    
     switch (type) {
       case 'member':
         return renderMemberForm();
@@ -306,8 +328,49 @@ const EditModal: React.FC<EditModalProps> = ({ show, onClose, onSave, item, type
         return renderStylistForm();
       case 'appointment':
         return renderAppointmentForm();
-      case 'gallery':
-        return renderGalleryForm();
+      case 'gallery':  
+        return (
+          <>
+            <div className="mb-3">
+              <label className="form-label">Image URL*</label>
+              <input
+                type="url"
+                className="form-control"
+                name="image_url"
+                value={formData.image_url || ""}
+                onChange={handleInputChange}
+                required
+                placeholder="https://example.com/image.jpg"
+              />
+              {formData.image_url && (
+                <div className="mt-2">
+                  <img
+                    src={formData.image_url}
+                    alt="Preview"
+                    className="img-thumbnail"
+                    style={{ maxHeight: "200px" }}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = 'placeholder-image-url';
+                      target.alt = 'Image load failed';
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Caption</label>
+              <input
+                type="text"
+                className="form-control"
+                name="caption"
+                value={formData.caption || ""}
+                onChange={handleInputChange}
+                placeholder="Enter image caption"
+              />
+            </div>
+          </>
+        );
       default:
         return null;
     }
@@ -317,11 +380,11 @@ const EditModal: React.FC<EditModalProps> = ({ show, onClose, onSave, item, type
 
   return (
     <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-      <div className="modal-dialog">
+      <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">
-              {isCreating ? 'Create New' : 'Edit'} {type.charAt(0).toUpperCase() + type.slice(1)}
+              {isCreating ? `Create New ${type}` : `Edit ${type}`}
             </h5>
             <button type="button" className="btn-close" onClick={onClose}></button>
           </div>

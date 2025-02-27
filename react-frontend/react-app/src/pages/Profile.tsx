@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../services/AuthContext";
-import { memberService } from "../services/MemberService";
+import { memberService, api } from '../services/MemberService';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
 
 const Profile = () => {
   const { user, isAuthenticated } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -18,24 +20,33 @@ const Profile = () => {
     postal_code: "",
     country: "",
   });
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    if (user) {
-      setFormData({
-        first_name: user.first_name || "",
-        last_name: user.last_name || "",
-        email: user.email || "",
-        phone: user.phone || "",
-        address: user.address || "",
-        city: user.city || "",
-        state: user.state || "",
-        postal_code: user.postal_code || "",
-        country: user.country || "",
-      });
+    const fetchProfile = async () => {
+      try {
+        const response = await memberService.getProfile();
+        if (response.member) {
+          setFormData({
+            first_name: response.member.first_name || "",
+            last_name: response.member.last_name || "",
+            email: response.member.email || "",
+            phone: response.member.phone || "",
+            address: response.member.address || "",
+            city: response.member.city || "",
+            state: response.member.state || "",
+            postal_code: response.member.postal_code || "",
+            country: response.member.country || "",
+          });
+        }
+      } catch (err) {
+        setError("Failed to fetch profile data");
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchProfile();
     }
-  }, [user]);
+  }, [isAuthenticated]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,13 +60,12 @@ const Profile = () => {
     e.preventDefault();
     try {
       await memberService.updateProfile(formData);
+      const response = await memberService.getProfile(); // Fetch fresh data
       setSuccess("Profile updated successfully!");
       setIsEditing(false);
       setError(null);
-      // Refresh page after 2 seconds to show updated info
-      setTimeout(() => window.location.reload(), 2000);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to update profile");
+      setError(err.message || "Failed to update profile");
       setSuccess(null);
     }
   };
@@ -96,7 +106,6 @@ const Profile = () => {
                 </button>
               </div>
               {isEditing ? (
-                // Edit Form
                 <form onSubmit={handleSubmit}>
                   <div className="row mb-4">
                     <div className="col-md-6">
@@ -231,14 +240,11 @@ const Profile = () => {
                   </button>
                 </form>
               ) : (
-                // Profile Display
                 <div className="profile-info">
                   <div className="row mb-4">
                     <div className="col-md-6">
                       <h5>Name</h5>
-                      <p>
-                        {user?.first_name} {user?.last_name}
-                      </p>
+                      <p>{user?.first_name} {user?.last_name}</p>
                     </div>
                     <div className="col-md-6">
                       <h5>Email</h5>
@@ -253,29 +259,29 @@ const Profile = () => {
                     </div>
                     <div className="col-md-6">
                       <h5>Address</h5>
-                      <p>{user?.address}</p>
+                      <p>{user?.address || "Not provided"}</p>
                     </div>
                   </div>
 
                   <div className="row mb-4">
                     <div className="col-md-6">
                       <h5>City</h5>
-                      <p>{user?.city}</p>
+                      <p>{user?.city || "Not provided"}</p>
                     </div>
                     <div className="col-md-6">
                       <h5>State</h5>
-                      <p>{user?.state}</p>
+                      <p>{user?.state || "Not provided"}</p>
                     </div>
                   </div>
 
                   <div className="row">
                     <div className="col-md-6">
                       <h5>Postal Code</h5>
-                      <p>{user?.postal_code}</p>
+                      <p>{user?.postal_code || "Not provided"}</p>
                     </div>
                     <div className="col-md-6">
                       <h5>Country</h5>
-                      <p>{user?.country}</p>
+                      <p>{user?.country || "Not provided"}</p>
                     </div>
                   </div>
                 </div>

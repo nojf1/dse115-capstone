@@ -1,23 +1,27 @@
 import { useState, useEffect } from 'react';
-import api from './MemberService';
+import { api } from './MemberService'; // Update this import
 
 interface AppointmentData {
   appointment_id: number;
-  member: {
+  member_id: number;
+  stylist_id: number;
+  service_id: number;
+  appointment_date: string;
+  status: 'Scheduled' | 'Completed' | 'Canceled';
+  description?: string;
+  member?: {
     first_name: string;
     last_name: string;
-  };
-  stylist: {
+  } | null;
+  stylist?: {
     name: string;
-  };
-  service: {
+  } | null;
+  service?: {
     name: string;
     price: number;
-  };
-  appointment_date: string;
-  status: string;
-  notes?: string;
+  } | null;
 }
+
 
 export const bookingService = {
   // Get all appointments (admin only)
@@ -25,10 +29,21 @@ export const bookingService = {
     try {
       const response = await api.get('/appointments/all', {
         params: {
-          include: ['member', 'stylist', 'service'] // Request related data
+          include: ['member', 'stylist', 'service']
         }
       });
-      return response.data;
+      
+      return {
+        appointments: response.data.appointments.map((appointment: any) => ({
+          ...appointment,
+          member: appointment.Member || appointment.member,
+          stylist: appointment.Stylist || appointment.stylist,
+          service: appointment.Service || appointment.service ? {
+            ...appointment.Service || appointment.service,
+            price: Number(appointment.Service?.price || appointment.service?.price || 0)
+          } : null
+        }))
+      };
     } catch (error) {
       throw error;
     }

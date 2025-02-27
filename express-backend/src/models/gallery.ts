@@ -1,51 +1,44 @@
-import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/db";
+import { Model, DataTypes } from 'sequelize';
+import { sequelize } from '../config/db';
 
-// Define interface for Gallery attributes
-interface GalleryAttributes {
-  id?: number;
-  image_url: string;
-  caption?: string;
-  uploaded_at?: Date;
-}
-
-// Extend Sequelize's Model class
-class Gallery extends Model<GalleryAttributes> implements GalleryAttributes {
+class Gallery extends Model {
   public id!: number;
   public image_url!: string;
   public caption!: string;
-  public readonly uploaded_at!: Date;
+  public uploaded_at!: Date;
 }
 
-// Initialize the model
 Gallery.init(
   {
     id: {
       type: DataTypes.INTEGER,
-      autoIncrement: true,
       primaryKey: true,
+      autoIncrement: true,
     },
     image_url: {
-      type: DataTypes.STRING(1000), // Increased length for long URLs
+      type: DataTypes.STRING(2048),
       allowNull: false,
       validate: {
-        isUrl: true, // Validate that it's a valid URL
+        isUrl: true,
       }
     },
     caption: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING,
       allowNull: true,
     },
     uploaded_at: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-    },
+      field: 'uploaded_at' // Explicitly specify the column name
+    }
   },
   {
     sequelize,
-    tableName: "gallery",
+    modelName: 'Gallery',
+    tableName: 'gallery',
     timestamps: false, 
+    underscored: true 
   }
 );
 

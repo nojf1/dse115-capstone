@@ -58,7 +58,8 @@ export const createImage = async (req: Request, res: Response) => {
 
     const newImage = await Gallery.create({
       image_url,
-      caption
+      caption,
+      uploaded_at: new Date() // Explicitly set the upload date
     });
 
     res.status(201).json({

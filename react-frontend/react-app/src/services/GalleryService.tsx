@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import api from './MemberService';
+import axios from 'axios';
+// import { GalleryImage } from '../types';
+
+const API_URL = 'http://localhost:5000/api/gallery';
 
 export interface GalleryImage {
   id: number;
   image_url: string;
   caption?: string;
-  uploaded_at: Date;
+  uploaded_at: string; // Change to string since it comes from API
 }
 
 export interface CreateGalleryImage {
@@ -18,40 +21,53 @@ export interface UpdateGalleryImage {
   caption?: string;
 }
 
+// Add auth header configuration
+const getAuthHeader = () => {
+  const token = localStorage.getItem('token');
+  return {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  };
+};
+
 export const galleryService = {
   getAllImages: async () => {
     try {
-      const response = await api.get('/gallery/all');
-      return response.data;
-    } catch (error) {
-      throw error;
+      const response = await axios.get(`${API_URL}/all`);
+      return {
+        images: response.data.images || [],
+        message: response.data.message
+      };
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch images');
     }
   },
 
-  createImage: async (imageData: { image_url: string; caption?: string }) => {
+  createImage: async (imageData: CreateGalleryImage) => {
     try {
-      const response = await api.post('/gallery/create', imageData);
+      const response = await axios.post(`${API_URL}/create`, imageData, getAuthHeader());
       return response.data;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to create image');
     }
   },
 
-  updateImage: async (id: number, imageData: { image_url?: string; caption?: string }) => {
+  updateImage: async (id: number, imageData: UpdateGalleryImage) => {
     try {
-      const response = await api.put(`/gallery/${id}`, imageData);
+      const response = await axios.put(`${API_URL}/${id}`, imageData, getAuthHeader());
       return response.data;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to update image');
     }
   },
 
   deleteImage: async (id: number) => {
     try {
-      const response = await api.delete(`/gallery/${id}`);
+      const response = await axios.delete(`${API_URL}/${id}`, getAuthHeader());
       return response.data;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to delete image');
     }
   }
 };

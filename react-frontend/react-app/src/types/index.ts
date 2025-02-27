@@ -4,7 +4,13 @@ export interface Member {
   last_name: string;
   email: string;
   phone?: string;
+  address: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
   is_admin?: boolean;
+  created_at?: Date;
 }
 
 export interface Service {
@@ -41,10 +47,10 @@ export interface Appointment {
 }
 
 export interface GalleryImage {
-    id: number;
-    image_url: string;
-    caption: string;
-  }
-  
+  id: number;
+  image_url: string;
+  caption: string;
+  uploaded_at?: Date;
+}
 
 export type FormDataType = Member | Service | Stylist | Appointment | GalleryImage;

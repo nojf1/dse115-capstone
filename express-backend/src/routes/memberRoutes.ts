@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerMember, loginMember, getMemberProfile, getAllMembers, updateMember, deleteMember } from "../controllers/memberController";
+import { registerMember, loginMember, getMemberProfile, getAllMembers, updateMember, deleteMember, forgotPassword, resetPassword } from "../controllers/memberController";
 import { authMiddleware } from "../middleware/auth";
 
 const router = Router();
@@ -10,6 +10,8 @@ const router = Router();
 router.post("/register", registerMember);
 // Define member login route
 router.post("/login", loginMember);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
 
 // Protected routes
 router.get("/profile", authMiddleware, getMemberProfile);

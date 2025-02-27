@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../services/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { memberService } from "../services/MemberService";
+import { memberService, api } from '../services/MemberService';
 import { serviceService } from "../services/ServicesService";
 import { stylistService } from "../services/StylistService";
 import { bookingService } from "../services/BookingService";
@@ -27,6 +27,12 @@ const Admin = () => {
   const [showModal, setShowModal] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
 
+  const formatPrice = (price: number | string | undefined | null): string => {
+    if (price === undefined || price === null) return '0.00';
+    const numPrice = typeof price === 'string' ? Number(price) : price;
+    return isNaN(numPrice) ? '0.00' : numPrice.toFixed(2);
+  };
+
   useEffect(() => {
     console.log('Auth status:', { isAuthenticated, isAdmin });
     if (!isAuthenticated || !isAdmin) {
@@ -35,15 +41,22 @@ const Admin = () => {
       return;
     }
     fetchData();
-  }, [isAuthenticated, isAdmin, activeTab, navigate]);
+  }, [isAuthenticated, isAdmin, navigate]);
+
+  useEffect(() => {
+    fetchData();
+  }, [activeTab]); // Add activeTab as dependency
 
   const fetchData = async () => {
     setLoading(true);
+    setError(null);
     try {
       switch (activeTab) {
         case "members":
           const membersData = await memberService.getAllMembers();
-          setMembers(membersData.members);
+          if (membersData && membersData.members) {
+            setMembers(membersData.members);
+          }
           break;
         case "services":
           const servicesData = await serviceService.getAllServices();
@@ -57,16 +70,24 @@ const Admin = () => {
           const appointmentsData = await bookingService.getAllAppointments();
           setAppointments(appointmentsData.appointments.map((appointment: any) => ({
             ...appointment,
-            status: appointment.status as "Scheduled" | "Completed" | "Canceled"
+            status: appointment.status || "Scheduled",
+            member: appointment.Member || appointment.member,
+            stylist: appointment.Stylist || appointment.stylist,
+            service: appointment.Service || appointment.service
           })));
           break;
         case "gallery":
-          const galleryData = await galleryService.getAllImages();
-          setGallery(galleryData.images);
+          const galleryResponse = await galleryService.getAllImages();
+          if (galleryResponse && galleryResponse.images) {
+            setGallery(galleryResponse.images);
+          } else {
+            setGallery([]);
+          }
           break;
       }
     } catch (error: any) {
-      setError(error?.message || "An error occurred while fetching data.");
+      console.error('Error fetching data:', error);
+      setError(error?.message || "An error occurred while fetching data");
     } finally {
       setLoading(false);
     }
@@ -87,6 +108,14 @@ const Admin = () => {
   const handleSave = async (updatedData: any) => {
     try {
       switch (activeTab) {
+        case "gallery":
+          const galleryUpdateData = {
+            id: updatedData.id,
+            image_url: updatedData.image_url,
+            caption: updatedData.caption || ''
+          };
+          await galleryService.updateImage(galleryUpdateData.id, galleryUpdateData);
+          break;
         case "members":
           await memberService.updateProfile(updatedData);
           break;
@@ -98,13 +127,6 @@ const Admin = () => {
           break;
         case "appointments":
           await bookingService.updateAppointment(updatedData.appointment_id, updatedData);
-          break;
-        case "gallery":
-          const galleryUpdateData: UpdateGalleryImage = {
-            image_url: updatedData.image_url,
-            caption: updatedData.caption
-          };
-          await galleryService.updateImage(updatedData.id, galleryUpdateData);
           break;
       }
       setShowModal(false);
@@ -320,7 +342,7 @@ const Admin = () => {
                 <th>Client</th>
                 <th>Stylist</th>
                 <th>Service</th>
-                <th>Date</th>
+                <th>Date & Time</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -329,11 +351,31 @@ const Admin = () => {
               {appointments.map((appointment) => (
                 <tr key={appointment.appointment_id}>
                   <td>{appointment.appointment_id}</td>
-                  <td>{`${appointment.member?.first_name} ${appointment.member?.last_name}`}</td>
-                  <td>{appointment.stylist?.name}</td>
-                  <td>{appointment.service?.name}</td>
-                  <td>{new Date(appointment.appointment_date).toLocaleString()}</td>
-                  <td>{appointment.status}</td>
+                  <td>
+                    {appointment.member ? 
+                      `${appointment.member.first_name} ${appointment.member.last_name}` : 
+                      'Unknown Client'}
+                  </td>
+                  <td>{appointment.stylist?.name || 'Unknown Stylist'}</td>
+                  <td>
+                    {appointment.service ? 
+                      `${appointment.service.name} (RM${formatPrice(appointment.service.price)})` : 
+                      'Unknown Service'}
+                  </td>
+                  <td>
+                    {new Date(appointment.appointment_date).toLocaleString('en-MY', {
+                      dateStyle: 'medium',
+                      timeStyle: 'short'
+                    })}
+                  </td>
+                  <td>
+                    <span className={`badge bg-${
+                      appointment.status === 'Completed' ? 'success' :
+                      appointment.status === 'Canceled' ? 'danger' : 'primary'
+                    }`}>
+                      {appointment.status}
+                    </span>
+                  </td>
                   <td>
                     <div className="btn-group">
                       <button
@@ -459,7 +501,7 @@ const Admin = () => {
       {/* Action Buttons */}
       <div className="mb-3">
         <button className="btn btn-primary" onClick={handleCreate}>
-          Create New {activeTab.charAt(0).toUpperCase() + activeTab.slice(1, -1)}
+          Create New {activeTab.charAt(0).toUpperCase() + activeTab.slice(1, )}
         </button>
       </div>
 
@@ -491,7 +533,8 @@ const Admin = () => {
         }}
         onSave={isCreating ? handleSaveCreate : handleSave}
         item={editItem}
-        type={activeTab.slice(0, -1) as 'member' | 'service' | 'stylist' | 'appointment' | 'gallery'}
+        // Don't slice the gallery type
+        type={activeTab === 'gallery' ? 'gallery' : activeTab.slice(0, -1) as 'member' | 'service' | 'stylist' | 'appointment' | 'gallery'}
         isCreating={isCreating}
       />
     </div>
