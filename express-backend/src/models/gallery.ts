@@ -26,8 +26,11 @@ Gallery.init(
       primaryKey: true,
     },
     image_url: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(1000), // Increased length for long URLs
       allowNull: false,
+      validate: {
+        isUrl: true, // Validate that it's a valid URL
+      }
     },
     caption: {
       type: DataTypes.STRING(255),

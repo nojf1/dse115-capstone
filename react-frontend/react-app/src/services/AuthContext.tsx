@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (user) {
         setUser(user);
         setIsAuthenticated(true);
-        setIsAdmin(user.isAdmin);
+        setIsAdmin(user.is_admin); // Make sure to use is_admin not isAdmin
       }
       setIsLoading(false);
     };
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const response = await memberService.login(email, password);
     setUser(response.member);
     setIsAuthenticated(true);
-    setIsAdmin(response.member.isAdmin);
+    setIsAdmin(response.member.is_admin); // Make sure to use is_admin not isAdmin
   };
 
   const logout = () => {

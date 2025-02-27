@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import faceguide from "../assets/faceguide.png";
+import faceguidebig from "../assets/faceguidebig.png";
 
 const FaceShape: React.FC = () => {
   const [foreheadWidth, setForeheadWidth] = useState("");
@@ -51,7 +52,7 @@ const FaceShape: React.FC = () => {
 
 
   return (
-    <div className="container py-5">
+    <><div className="container py-5">
       <h2 className="text-center fw-bold mb-4">Find Your Face Shape</h2>
 
       {/* Description Section */}
@@ -69,7 +70,7 @@ const FaceShape: React.FC = () => {
 
         {/* Right Side: Calculator Form */}
         <div className="col-md-4">
-          <div className="p-4 border rounded bg-light shadow">
+          <div className="p-4 border rounded bg-light shadow-sm">
             <h5 className="text-center mb-3">Enter Your Measurements</h5>
 
             <div className="mb-2">
@@ -78,8 +79,7 @@ const FaceShape: React.FC = () => {
                 type="number"
                 className="form-control form-control-sm"
                 value={foreheadWidth}
-                onChange={(e) => setForeheadWidth(e.target.value)}
-              />
+                onChange={(e) => setForeheadWidth(e.target.value)} />
             </div>
 
             <div className="mb-2">
@@ -88,8 +88,7 @@ const FaceShape: React.FC = () => {
                 type="number"
                 className="form-control form-control-sm"
                 value={cheekboneWidth}
-                onChange={(e) => setCheekboneWidth(e.target.value)}
-              />
+                onChange={(e) => setCheekboneWidth(e.target.value)} />
             </div>
 
             <div className="mb-2">
@@ -98,8 +97,7 @@ const FaceShape: React.FC = () => {
                 type="number"
                 className="form-control form-control-sm"
                 value={jawlineWidth}
-                onChange={(e) => setJawlineWidth(e.target.value)}
-              />
+                onChange={(e) => setJawlineWidth(e.target.value)} />
             </div>
 
             <div className="mb-2">
@@ -108,8 +106,7 @@ const FaceShape: React.FC = () => {
                 type="number"
                 className="form-control form-control-sm"
                 value={faceLength}
-                onChange={(e) => setFaceLength(e.target.value)}
-              />
+                onChange={(e) => setFaceLength(e.target.value)} />
             </div>
 
             {/* Calculate Button */}
@@ -129,6 +126,15 @@ const FaceShape: React.FC = () => {
         </div>
       </div>
     </div>
+
+    <section
+      className="guide-hero-section"
+      style={{
+        backgroundImage: `url(${faceguidebig})`,
+      }}
+    >
+      <div className="guide-hero-overlay"></div>
+    </section></>
   );
 };
 

@@ -43,19 +43,18 @@ export const getAllImages = async (req: Request, res: Response) => {
   }
 };
 
-// Upload new image (admin only)
-export const uploadImage = async (req: Request, res: Response) => {
+// Create new image (admin only)
+export const createImage = async (req: Request, res: Response) => {
   try {
     if (!req.user?.isAdmin) {
       return res.status(403).json({ message: "Admin access required" });
     }
 
-    if (!req.file) {
-      return res.status(400).json({ message: "No image file provided" });
-    }
+    const { image_url, caption } = req.body;
 
-    const { caption } = req.body;
-    const image_url = `/uploads/gallery/${req.file.filename}`;
+    if (!image_url) {
+      return res.status(400).json({ message: "Image URL is required" });
+    }
 
     const newImage = await Gallery.create({
       image_url,
@@ -63,7 +62,7 @@ export const uploadImage = async (req: Request, res: Response) => {
     });
 
     res.status(201).json({
-      message: "Image uploaded successfully",
+      message: "Image added successfully",
       image: newImage,
     });
   } catch (error) {
@@ -72,7 +71,7 @@ export const uploadImage = async (req: Request, res: Response) => {
   }
 };
 
-// Update image caption (admin only)
+// Update image (admin only)
 export const updateImage = async (req: Request, res: Response) => {
   try {
     if (!req.user?.isAdmin) {
@@ -80,14 +79,17 @@ export const updateImage = async (req: Request, res: Response) => {
     }
 
     const { id } = req.params;
-    const { caption } = req.body;
+    const { image_url, caption } = req.body;
 
     const image = await Gallery.findByPk(id);
     if (!image) {
       return res.status(404).json({ message: "Image not found" });
     }
 
-    await image.update({ caption });
+    await image.update({
+      image_url: image_url || image.image_url,
+      caption: caption || image.caption
+    });
 
     res.status(200).json({
       message: "Image updated successfully",

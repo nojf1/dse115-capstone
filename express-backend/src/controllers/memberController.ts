@@ -80,7 +80,7 @@ export const loginMember = async (req: Request, res: Response) => {
       {
         id: member.member_id,
         email: member.email,
-        isAdmin: member.is_admin,
+        isAdmin: member.is_admin, // Make sure this matches the database field
       },
       process.env.JWT_SECRET as string,
       { expiresIn: "24h" }

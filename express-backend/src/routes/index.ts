@@ -5,6 +5,7 @@ import serviceRoutes from "./serviceRoutes";
 import stylistRoutes from "./stylistRoutes";
 import appointmentRoutes from "./appointmentRoutes";
 import productRoutes from "./productRoutes";
+import galleryRoutes from "./galleryRoutes";
 
 const router = Router();
 
@@ -12,7 +13,7 @@ const router = Router();
 connectDB();
 
 // Sync Sequelize models with the database
-sequelize.sync({ force: false, logging: console.log }).then(() => {
+sequelize.sync({ force: false }).then(() => {
   console.log("Database synchronized");
 }).catch(error => {
   console.error("Sync error:", error);
@@ -24,5 +25,6 @@ router.use("/services", serviceRoutes);
 router.use("/stylists", stylistRoutes);
 router.use("/appointments", appointmentRoutes);
 router.use("/products", productRoutes);
+router.use("/gallery", galleryRoutes);
 
 export default router;

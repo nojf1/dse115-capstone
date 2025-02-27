@@ -2,27 +2,32 @@ import { useState, useEffect } from 'react';
 import api from './MemberService';
 
 interface AppointmentData {
-  appointment_id?: number;
-  member_id?: number;
-  stylist_id: number;
-  service_id: number;
-  appointment_date: string;
-  status?: 'Scheduled' | 'Completed' | 'Canceled';
-  notes?: string;
-  stylist?: {
+  appointment_id: number;
+  member: {
+    first_name: string;
+    last_name: string;
+  };
+  stylist: {
     name: string;
   };
-  service?: {
+  service: {
     name: string;
     price: number;
   };
+  appointment_date: string;
+  status: string;
+  notes?: string;
 }
 
 export const bookingService = {
   // Get all appointments (admin only)
-  getAllAppointments: async () => {
+  getAllAppointments: async (): Promise<{ appointments: AppointmentData[] }> => {
     try {
-      const response = await api.get('/appointments/all');
+      const response = await api.get('/appointments/all', {
+        params: {
+          include: ['member', 'stylist', 'service'] // Request related data
+        }
+      });
       return response.data;
     } catch (error) {
       throw error;

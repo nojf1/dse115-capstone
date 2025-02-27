@@ -18,6 +18,26 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+export interface Member {
+  member_id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  address: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  is_admin?: boolean;
+  created_at?: Date;
+}
+
+interface MemberResponse {
+  message: string;
+  members: Member[];
+}
+
 // Member service functions
 export const memberService = {
   // Login member
@@ -25,11 +45,13 @@ export const memberService = {
     try {
       const response = await api.post('/members/login', { email, password });
       if (response.data.token) {
+        console.log('Login response:', response.data); // Debug log
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.member));
       }
       return response.data;
     } catch (error) {
+      console.error('Login error:', error); // Debug log
       throw error;
     }
   },
@@ -94,6 +116,16 @@ export const memberService = {
     }
   },
 
+  // Get all members (admin only)
+  getAllMembers: async (): Promise<MemberResponse> => {
+    try {
+      const response = await api.get('/members/all');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   // Logout member
   logout: () => {
     localStorage.removeItem('token');
@@ -106,6 +138,7 @@ export const memberService = {
     if (userStr) return JSON.parse(userStr);
     return null;
   },
+  
 
   // Check if user is logged in
   isLoggedIn: () => {

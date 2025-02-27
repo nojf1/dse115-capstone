@@ -1,9 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../services/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import TSLogo from "../assets/TS.png";
 import personfill from "../assets/person-fill.svg";
 
 const Header = () => {
+  const { isAdmin, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
       <div className="container">
@@ -13,8 +22,8 @@ const Header = () => {
             alt="Timeless Style Logo" 
             height="60" 
             className="me-2"
-            />
-          </Link>
+          />
+        </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span className="navbar-toggler-icon"></span>
         </button>
@@ -33,14 +42,28 @@ const Header = () => {
               <Link className="nav-link" to="/service">Our Services</Link>
             </li>
             <li className="nav-item">
-            <Link className="nav-link" to="/products">Products</Link>
+              <Link className="nav-link" to="/products">Products</Link>
             </li>
             <li className="nav-item">
-            <Link className="nav-link" to="/gallery">Gallery</Link>
+              <Link className="nav-link" to="/gallery">Gallery</Link>
             </li>
             <li className="nav-item">
-            <Link className="nav-link" to="/booking">Booking</Link>
+              <Link className="nav-link" to="/booking">Booking</Link>
             </li>
+            {isAdmin && (
+              <li className="nav-item">
+                <Link 
+                  className="nav-link" 
+                  to="/admin"
+                  style={{ 
+                    color: '#dc3545',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  Admin Dashboard
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
         <div className="dropdown">
@@ -59,9 +82,28 @@ const Header = () => {
             />
           </button>
           <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-            <li><Link className="dropdown-item" to="/profile">Profile</Link></li>
-            <li><Link className="dropdown-item" to="/login">Login</Link></li>
-            <li><Link className="dropdown-item" to="/register">Register</Link></li>
+            {isAuthenticated ? (
+              <>
+                <li><Link className="dropdown-item" to="/profile">Profile</Link></li>
+                {isAdmin && (
+                  <li><Link className="dropdown-item" to="/admin">Admin Dashboard</Link></li>
+                )}
+                <li><hr className="dropdown-divider" /></li>
+                <li>
+                  <button 
+                    className="dropdown-item" 
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li><Link className="dropdown-item" to="/login">Login</Link></li>
+                <li><Link className="dropdown-item" to="/register">Register</Link></li>
+              </>
+            )}
           </ul>
         </div>
       </div>

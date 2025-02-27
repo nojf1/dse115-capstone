@@ -101,4 +101,8 @@ Appointment.belongsTo(Service, {
   onDelete: 'SET NULL',
 });
 
+Appointment.belongsTo(Member, { foreignKey: 'member_id' });
+Appointment.belongsTo(Stylist, { foreignKey: 'stylist_id' });
+Appointment.belongsTo(Service, { foreignKey: 'service_id' });
+
 export default Appointment;
