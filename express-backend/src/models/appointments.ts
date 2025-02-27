@@ -12,6 +12,7 @@ interface AppointmentAttributes {
   service_id: number;
   appointment_date: Date;
   status?: 'Scheduled' | 'Completed' | 'Canceled';
+  description?: string; // Add description field
   created_at?: Date;
 }
 
@@ -23,6 +24,7 @@ class Appointment extends Model<AppointmentAttributes> implements AppointmentAtt
   public service_id!: number;
   public appointment_date!: Date;
   public status!: 'Scheduled' | 'Completed' | 'Canceled';
+  public description!: string; // Add description field
   public readonly created_at!: Date;
 }
 
@@ -65,6 +67,10 @@ Appointment.init(
     status: {
       type: DataTypes.ENUM('Scheduled', 'Completed', 'Canceled'),
       defaultValue: 'Scheduled',
+    },
+    description: {  // Add description column
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
     created_at: {
       type: DataTypes.DATE,

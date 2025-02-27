@@ -5,7 +5,7 @@ import timelessstyle from "../assets/timeless-style.png";
 
 const Footer = () => {
   return (
-    <footer className="bg-light text-dark pt-4 pb-3">
+    <footer className="bg-white text-dark pt-4 pb-3 border-top">
       <div className="container">
         <div className="row">
           {/* Left Section: Logo */}

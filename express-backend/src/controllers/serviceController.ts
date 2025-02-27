@@ -1,17 +1,28 @@
 import { Request, Response } from "express";
 import Service from "../models/services";
 
+// Helper function to format service data
+const formatServiceData = (service: any) => {
+  return {
+    ...service.toJSON(),
+    price: Number(service.price)
+  };
+};
+
 // Get all services
 export const getAllServices = async (req: Request, res: Response) => {
   try {
     const services = await Service.findAll();
+    
+    // Format all services to ensure price is a number
+    const formattedServices = services.map(formatServiceData);
+    
     res.status(200).json({
       message: "Services retrieved successfully",
-      services,
+      services: formattedServices,
     });
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     res.status(500).json({ message: "Server error", error: errorMessage });
   }
 };
@@ -28,18 +39,16 @@ export const getServiceById = async (req: Request, res: Response) => {
 
     res.status(200).json({
       message: "Service retrieved successfully",
-      service,
+      service: formatServiceData(service),
     });
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     res.status(500).json({ message: "Server error", error: errorMessage });
   }
 };
 
 export const createService = async (req: Request, res: Response) => {
   try {
-    // Check if user is admin
     if (!req.user?.isAdmin) {
       return res.status(403).json({ message: "Admin access required" });
     }
@@ -47,24 +56,28 @@ export const createService = async (req: Request, res: Response) => {
     const { name, description, price } = req.body;
 
     // Validate required fields
-    if (!name || !price) {
+    if (!name || price === undefined) {
       return res.status(400).json({ message: "Name and price are required" });
     }
 
-    // Create new service
+    // Ensure price is stored as a number
+    const numericPrice = Number(price);
+    if (isNaN(numericPrice)) {
+      return res.status(400).json({ message: "Price must be a valid number" });
+    }
+
     const newService = await Service.create({
       name,
       description,
-      price,
+      price: numericPrice,
     });
 
     res.status(201).json({
       message: "Service created successfully",
-      service: newService,
+      service: formatServiceData(newService),
     });
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     res.status(500).json({ message: "Server error", error: errorMessage });
   }
 };
@@ -72,7 +85,6 @@ export const createService = async (req: Request, res: Response) => {
 // Update service (admin only)
 export const updateService = async (req: Request, res: Response) => {
   try {
-    // Check if user is admin
     if (!req.user?.isAdmin) {
       return res.status(403).json({ message: "Admin access required" });
     }
@@ -85,20 +97,24 @@ export const updateService = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Service not found" });
     }
 
-    // Update service
+    // Convert price to number if provided
+    const numericPrice = price ? Number(price) : undefined;
+    if (price !== undefined && isNaN(numericPrice!)) {
+      return res.status(400).json({ message: "Price must be a valid number" });
+    }
+
     await service.update({
       name: name || service.name,
       description: description || service.description,
-      price: price || service.price,
+      price: numericPrice || service.price,
     });
 
     res.status(200).json({
       message: "Service updated successfully",
-      service,
+      service: formatServiceData(service),
     });
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     res.status(500).json({ message: "Server error", error: errorMessage });
   }
 };

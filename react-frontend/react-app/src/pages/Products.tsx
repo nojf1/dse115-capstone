@@ -45,7 +45,7 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, show
             <div className="modal-footer">
               <button 
                 type="button" 
-                className="btn btn-secondary" 
+                className="btn btn-dark" 
                 onClick={onHide}
               >
                 Close
@@ -75,7 +75,7 @@ const Products = () => {
       <div className="text-center mb-5">
         <h1 className="display-4 fw-bold mb-3">Our Products</h1>
         <p className="lead text-muted">
-          Discover our premium hair care products
+          Discover our premium hair care products. Products listed only available in stores.
         </p>
       </div>
 

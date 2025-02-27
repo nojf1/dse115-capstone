@@ -1,6 +1,7 @@
 import { useServiceData } from "../services/ServicesService";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
+import { Link } from "react-router-dom";
 
 const Services = () => {
   const { services, loading, error } = useServiceData();
@@ -68,12 +69,14 @@ const Services = () => {
                         </div>
                       </div>
                       <div className="card-footer bg-transparent border-0">
-                        <button 
-                          className="btn btn-dark w-100"
-                          onClick={() => {/* Add booking logic */}}
-                        >
-                          Book Now
-                        </button>
+                      <Link
+            style={{ textDecoration: "none", color: "black" }}
+            to="/booking"
+          >
+            {" "}
+            <button className="btn btn-dark w-100">Book Now</button>
+          </Link>
+                        
                       </div>
                     </div>
                   </div>
