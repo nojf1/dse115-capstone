@@ -181,7 +181,10 @@ export const memberService = {
       const response = await api.post('/members/forgot-password', { email });
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to send reset email');
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('Failed to send reset email');
     }
   },
   
@@ -190,7 +193,10 @@ export const memberService = {
       const response = await api.post(`/members/reset-password/${token}`, { password });
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to reset password');
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      }
+      throw new Error('Failed to reset password');
     }
   }
 };

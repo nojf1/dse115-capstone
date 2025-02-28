@@ -2,18 +2,19 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { memberService, api } from '../services/MemberService';
 
 interface AuthContextType {
-  user: any;
+  user: Member | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   register: (userData: any) => Promise<void>;
+  refreshUser: () => Promise<void>; // Add this new function
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<any>(() => {
     const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
@@ -58,6 +59,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await memberService.register(userData);
   };
 
+  // Add this new refresh function
+  const refreshUser = async () => {
+    if (!localStorage.getItem('token')) return;
+    
+    try {
+      const response = await memberService.getProfile();
+      if (response.member) {
+        setUser(response.member);
+      }
+    } catch (error) {
+      console.error("Failed to refresh user data:", error);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -68,6 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         login,
         logout,
         register,
+        refreshUser, // Add this to the context value
       }}
     >
       {children}

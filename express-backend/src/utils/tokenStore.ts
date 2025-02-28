@@ -1,31 +1,41 @@
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 
-interface ResetToken {
+interface TokenData {
   email: string;
-  token: string;
-  expires: Date;
+  expires: number;
 }
 
-class PasswordResetTokenStore {
-  private tokens: Map<string, ResetToken> = new Map();
+class TokenStore {
+  private tokens: Map<string, TokenData>;
+
+  constructor() {
+    this.tokens = new Map();
+  }
 
   createToken(email: string): string {
-    const token = crypto.randomBytes(20).toString('hex');
-    const expires = new Date(Date.now() + 3600000); // 1 hour expiry
+    // Generate a random token
+    const token = crypto.randomBytes(32).toString('hex');
     
-    this.tokens.set(token, { email, token, expires });
+    // Store token with email and expiration (1 hour from now)
+    this.tokens.set(token, {
+      email,
+      expires: Date.now() + 3600000 // 1 hour in milliseconds
+    });
+    
     return token;
   }
 
   validateToken(token: string): string | null {
-    const resetToken = this.tokens.get(token);
+    const data = this.tokens.get(token);
     
-    if (!resetToken || resetToken.expires < new Date()) {
+    // Check if token exists and hasn't expired
+    if (!data) return null;
+    if (data.expires < Date.now()) {
       this.tokens.delete(token);
       return null;
     }
     
-    return resetToken.email;
+    return data.email;
   }
 
   removeToken(token: string): void {
@@ -33,4 +43,4 @@ class PasswordResetTokenStore {
   }
 }
 
-export const tokenStore = new PasswordResetTokenStore();
+export const tokenStore = new TokenStore();

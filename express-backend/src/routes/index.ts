@@ -6,6 +6,7 @@ import stylistRoutes from "./stylistRoutes";
 import appointmentRoutes from "./appointmentRoutes";
 import productRoutes from "./productRoutes";
 import galleryRoutes from "./galleryRoutes";
+import cartRoutes from "./cartRoutes"; 
 
 const router = Router();
 
@@ -26,5 +27,5 @@ router.use("/stylists", stylistRoutes);
 router.use("/appointments", appointmentRoutes);
 router.use("/products", productRoutes);
 router.use("/gallery", galleryRoutes);
-
+router.use("/cart", cartRoutes); 
 export default router;

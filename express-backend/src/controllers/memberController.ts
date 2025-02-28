@@ -6,6 +6,9 @@ import Member from "../models/members";
 import { transporter, emailConfig } from '../config/email';
 import crypto from 'crypto';
 import { tokenStore } from '../utils/tokenStore';
+import { sequelize } from '../config/db';
+import { QueryTypes } from 'sequelize';
+import { sendPasswordResetEmail, sendPasswordResetConfirmationEmail } from '../utils/emailService';
 
 // Register a new member
 export const registerMember = async (req: Request, res: Response) => {
@@ -307,34 +310,55 @@ export const deleteMember = async (req: Request, res: Response) => {
 export const forgotPassword = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
-    const member = await Member.findOne({ where: { email } });
-
-    if (!member) {
-      return res.status(404).json({ message: 'No account with that email exists.' });
+    
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
     }
-
-    // Generate token
-    const token = tokenStore.createToken(email);
-
-    // Create reset URL
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${token}`;
-
-    // Send email
-    await transporter.sendMail({
-      ...emailConfig,
-      to: email,
-      html: `
-        <h1>Password Reset Request</h1>
-        <p>You requested a password reset. Click the link below to reset your password:</p>
-        <a href="${resetUrl}">Reset Password</a>
-        <p>If you didn't request this, please ignore this email.</p>
-        <p>This link will expire in 1 hour.</p>
-      `
+    
+    // Check if email exists in the database using Sequelize
+    const member = await Member.findOne({ 
+      where: { email } 
     });
+    
+    // For security reasons, always return success even if email not found
+    if (!member) {
+      console.log(`Email not found: ${email}`);
+      return res.status(200).json({ 
+        message: "If your email exists in our system, you'll receive a password reset link" 
+      });
+    }
+    
+    // Generate password reset token
+    const token = tokenStore.createToken(email);
+    
+    // Fix the URL formatting to ensure it's correct
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    // Remove trailing slash if present, then ensure proper format
+    const baseUrl = frontendUrl.replace(/\/$/, '');
+    const resetLink = `${baseUrl}/reset-password/${token}`;
 
-    res.json({ message: 'Password reset email sent!' });
+    console.log(`Reset password link for ${email}: ${resetLink}`);
+    
+    // Send the password reset email
+    const emailSent = await sendPasswordResetEmail(email, resetLink);
+    
+    if (emailSent) {
+      console.log(`Password reset email sent to ${email}`);
+    } else {
+      console.error(`Failed to send password reset email to ${email}`);
+      // Note: We still return success to user for security reasons
+    }
+    
+    return res.status(200).json({ 
+      message: "If your email exists in our system, you'll receive a password reset link",
+      // For development/testing purposes only - remove in production
+      token,
+      resetLink
+    });
+    
   } catch (error) {
-    res.status(500).json({ message: 'Error sending reset email.' });
+    console.error("Forgot password error:", error);
+    return res.status(500).json({ message: "Server error processing your request" });
   }
 };
 
@@ -342,32 +366,42 @@ export const resetPassword = async (req: Request, res: Response) => {
   try {
     const { token } = req.params;
     const { password } = req.body;
-
+    
+    if (!token || !password) {
+      return res.status(400).json({ message: "Token and password are required" });
+    }
+    
+    // Validate token and get the associated email
     const email = tokenStore.validateToken(token);
+    
     if (!email) {
-      return res.status(400).json({ message: 'Invalid or expired reset token.' });
+      return res.status(400).json({ message: "Invalid or expired token" });
     }
-
-    const member = await Member.findOne({ where: { email } });
-    if (!member) {
-      return res.status(400).json({ message: 'Member not found.' });
-    }
-
-    // Hash new password
+    
+    // Hash the new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Update password
-    await member.update({ password: hashedPassword });
     
-    // Remove used token
+    // Update password in the database using Sequelize
+    const updatedRows = await Member.update(
+      { password: hashedPassword },
+      { where: { email } }
+    );
+    
+    if (updatedRows[0] === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    // Remove the token after use
     tokenStore.removeToken(token);
-
-    res.json({ message: 'Password successfully reset!' });
-  } catch (error: any) {
-    res.status(500).json({ 
-      message: 'Error resetting password.',
-      error: error.message 
-    });
+    
+    // Send a confirmation email
+    await sendPasswordResetConfirmationEmail(email);
+    
+    return res.status(200).json({ message: "Password has been reset successfully" });
+    
+  } catch (error) {
+    console.error("Reset password error:", error);
+    return res.status(500).json({ message: "Server error processing your request" });
   }
 };

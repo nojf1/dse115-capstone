@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import { useState, useEffect } from 'react';
 import { memberService, api } from '../services/MemberService';
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../services/AuthContext";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import timelessstyle from "../assets/timeless-style.png";
@@ -146,7 +146,7 @@ const Login: React.FC = () => {
                 />
                 <label className="form-check-label" htmlFor="rememberMe">Remember Me</label>
               </div>
-              <a href="#" className="text-primary small">Forgot your password?</a>
+              <Link to="/forgot-password" className="text-primary small">Forgot your password?</Link>
             </div>
 
             <button 

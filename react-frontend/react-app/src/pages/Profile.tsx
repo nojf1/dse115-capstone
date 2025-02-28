@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../services/AuthContext";
-import { memberService, api } from '../services/MemberService';
+import { memberService } from '../services/MemberService';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
 
 const Profile = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, refreshUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -21,30 +21,30 @@ const Profile = () => {
     country: "",
   });
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await memberService.getProfile();
-        if (response.member) {
-          setFormData({
-            first_name: response.member.first_name || "",
-            last_name: response.member.last_name || "",
-            email: response.member.email || "",
-            phone: response.member.phone || "",
-            address: response.member.address || "",
-            city: response.member.city || "",
-            state: response.member.state || "",
-            postal_code: response.member.postal_code || "",
-            country: response.member.country || "",
-          });
-        }
-      } catch (err) {
-        setError("Failed to fetch profile data");
+  const loadUserData = async () => {
+    try {
+      const response = await memberService.getProfile();
+      if (response.member) {
+        setFormData({
+          first_name: response.member.first_name || "",
+          last_name: response.member.last_name || "",
+          email: response.member.email || "",
+          phone: response.member.phone || "",
+          address: response.member.address || "",
+          city: response.member.city || "",
+          state: response.member.state || "",
+          postal_code: response.member.postal_code || "",
+          country: response.member.country || "",
+        });
       }
-    };
+    } catch (err) {
+      setError("Failed to fetch profile data");
+    }
+  };
 
+  useEffect(() => {
     if (isAuthenticated) {
-      fetchProfile();
+      loadUserData();
     }
   }, [isAuthenticated]);
 
@@ -60,7 +60,13 @@ const Profile = () => {
     e.preventDefault();
     try {
       await memberService.updateProfile(formData);
-      const response = await memberService.getProfile(); // Fetch fresh data
+      
+      // Refresh user data in the auth context
+      await refreshUser();
+      
+      // Refresh form data
+      await loadUserData();
+      
       setSuccess("Profile updated successfully!");
       setIsEditing(false);
       setError(null);
