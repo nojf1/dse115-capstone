@@ -61,21 +61,21 @@ Nodemailer for email services
 - `/express-backend` - Node.js/Express.js backend API
 - `/react-frontend` - React/TypeScript frontend
 
-### Backend Setup
+# Backend Setup
 use the terminal to enter these commands in order:
 cd express-backend (change directory to backend folder)
 npm install (installs packages and dependencies)
 npm run dev (runs the development server)
 backend will run on http://localhost:5000
 
-### Frontend Setup
+# Frontend Setup
 use the terminal to enter these commands in order:
 cd react-frontend, then cd react-app (change directory to frontend folder, make sure it is in react-app, not react-frontend)
 npm install (installs packages and dependencies)
 npm run dev  (runs the development server)
 frontend will run on http://localhost:5173
 
-### Database Setup
+# Database Setup
 1. Create a MySQL database named timeless_style
 2. Configure your database connection in `/express-backend/.env`:
 ```env
@@ -92,7 +92,7 @@ FRONTEND_URL=http://localhost:5173/
 JWT_SECRET=your_jwt_key
 ```
 
-### API Endpoints (currently)
+# API Endpoints (currently)
 Authentication
 ```
 POST /api/members/register - Register new member
