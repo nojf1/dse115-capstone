@@ -3,54 +3,54 @@
 ## Project Overview
 Website Title: Timeless Hair Salon
 
-## Features
-# User Authentication & Management
+# Features
+## User Authentication & Management
 
 Registration and login system
 Profile management
 Password reset functionality
 Role-based access control
 
-# Services
+## Services
 
 Browse available salon services
 Service details and pricing
 Admin service management
 
-# Appointments
+## Appointments
 
 Schedule appointments
 Select preferred stylists
 View upcoming appointments
 Cancel bookings
 
-# Products
+## Products
 
 Browse hair care products
 View product details
 Add products to cart
 Purchase process
 
-# Shopping Cart
+## Shopping Cart
 
 Add/remove items
 Update quantities
 Calculate totals
 Checkout (simulated)
 
-# Gallery
+## Gallery
 
 View salon's hairstyles 
 
-## Technologies
-# Frontend
+# Technologies
+## Frontend
 React 18 with TypeScript
 Vite for fast development experience
 React Router for navigation
 Bootstrap 5 for responsive styling
 Axios for API communication
 
-# Backend
+## Backend
 Node.js with Express.js framework
 TypeScript for type safety
 Sequelize ORM for database operations
