@@ -5,42 +5,48 @@ Website Title: Timeless Hair Salon
 
 # Features
 ## User Authentication & Management
-
+```
 Registration and login system
 Profile management
 Password reset functionality
 Role-based access control
+```
 
 ## Services
-
+```
 Browse available salon services
 Service details and pricing
 Admin service management
+```
 
 ## Appointments
-
+```
 Schedule appointments
 Select preferred stylists
 View upcoming appointments
 Cancel bookings
+```
 
 ## Products
-
+```
 Browse hair care products
 View product details
 Add products to cart
 Purchase process
+```
 
 ## Shopping Cart
-
+```
 Add/remove items
 Update quantities
 Calculate totals
 Checkout (simulated)
+```
 
 ## Gallery
-
+```
 View salon's hairstyles 
+```
 
 # Technologies
 ## Frontend
