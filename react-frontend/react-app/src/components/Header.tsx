@@ -85,6 +85,7 @@ const Header = () => {
             {isAuthenticated ? (
               <>
                 <li><Link className="dropdown-item" to="/profile">Profile</Link></li>
+                <li><Link className="dropdown-item" to="/cart">Cart</Link></li>
                 {isAdmin && (
                   <li><Link className="dropdown-item" to="/admin">Admin Dashboard</Link></li>
                 )}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../services/AuthContext";
 import { memberService } from '../services/MemberService';
+import { bookingService } from '../services/BookingService';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
 
@@ -20,6 +21,11 @@ const Profile = () => {
     postal_code: "",
     country: "",
   });
+  
+  // Add these new states for appointments
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [appointmentsLoading, setAppointmentsLoading] = useState(false);
+  const [appointmentError, setAppointmentError] = useState<string | null>(null);
 
   const loadUserData = async () => {
     try {
@@ -42,9 +48,47 @@ const Profile = () => {
     }
   };
 
+  // Add this new function to fetch appointments
+  const fetchAppointments = async () => {
+    if (!isAuthenticated) return;
+    
+    setAppointmentsLoading(true);
+    setAppointmentError(null);
+    
+    try {
+      const response = await bookingService.getMyAppointments();
+      // Sort by date (most recent first) and limit to 5
+      const sortedAppointments = response.appointments
+        .sort((a: any, b: any) => new Date(b.appointment_date).getTime() - new Date(a.appointment_date).getTime())
+        .slice(0, 5);
+      
+      setAppointments(sortedAppointments);
+    } catch (err: any) {
+      setAppointmentError(err.message || "Failed to load appointments");
+    } finally {
+      setAppointmentsLoading(false);
+    }
+  };
+
+  // Add this function to handle appointment cancellation
+  const handleCancelAppointment = async (appointmentId: number) => {
+    if (!confirm("Are you sure you want to cancel this appointment?")) return;
+    
+    try {
+      // Using updateAppointment instead of deleteAppointment to change status
+      await bookingService.updateAppointment(appointmentId, { status: 'Canceled' });
+      setSuccess("Appointment cancelled successfully");
+      // Refresh appointment list
+      fetchAppointments();
+    } catch (err: any) {
+      setError(err.message || "Failed to cancel appointment");
+    }
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       loadUserData();
+      fetchAppointments();
     }
   }, [isAuthenticated]);
 
@@ -290,6 +334,88 @@ const Profile = () => {
                       <p>{user?.country || "Not provided"}</p>
                     </div>
                   </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Add this new section for appointments */}
+      <div className="row justify-content-center mt-5">
+        <div className="col-md-8">
+          <div className="card shadow">
+            <div className="card-body p-5">
+              <div className="mb-4">
+                <h2 className="fw-bold">My Recent Appointments</h2>
+              </div>
+              
+              {appointmentError && (
+                <div className="alert alert-danger" role="alert">
+                  {appointmentError}
+                </div>
+              )}
+              
+              {appointmentsLoading ? (
+                <div className="text-center">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+              ) : appointments.length === 0 ? (
+                <div className="alert alert-info">
+                  You don't have any appointments yet.
+                </div>
+              ) : (
+                <div className="table-responsive">
+                  <table className="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Date & Time</th>
+                        <th>Service</th>
+                        <th>Stylist</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {appointments.map(appointment => (
+                        <tr key={appointment.appointment_id}>
+                          <td>
+                            {new Date(appointment.appointment_date).toLocaleString('en-US', {
+                              dateStyle: 'medium',
+                              timeStyle: 'short'
+                            })}
+                          </td>
+                          <td>
+                            {appointment.service?.name || 'N/A'}
+                          </td>
+                          <td>
+                            {appointment.stylist?.name || 'N/A'}
+                          </td>
+                          <td>
+                            <span className={`badge ${
+                              appointment.status === 'Scheduled' ? 'bg-primary' :
+                              appointment.status === 'Completed' ? 'bg-success' :
+                              'bg-danger'
+                            }`}>
+                              {appointment.status}
+                            </span>
+                          </td>
+                          <td>
+                            {appointment.status === 'Scheduled' && (
+                              <button 
+                                className="btn btn-sm btn-outline-danger"
+                                onClick={() => handleCancelAppointment(appointment.appointment_id)}
+                              >
+                                Cancel
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               )}
             </div>

@@ -13,11 +13,11 @@ interface Contact {
 
 const branches: Contact[] = [
   { id: 1, name: "Suria KLCC", address: "Lot 403B, 4th Floor, Suria KLCC, 50088 Kuala Lumpur", phone: "03-2161 6788", state: "Kuala Lumpur", image: salonbg },
-  { id: 2, name: "1 Utama Damansara", address: "Lot S-215, 2nd Floor, 1 Utama Shopping Centre, 47800 Petaling Jaya", phone: "03-7726 9988", state: "Selangor", image: timelessstyle2 },
-  { id: 3, name: "Mid Valley Megamall", address: "Lot S-233, 2nd Floor, Mid Valley City, 59200 Kuala Lumpur", phone: "03-2283 8777", state: "Kuala Lumpur", image: "https://i.kym-cdn.com/photos/images/newsfeed/002/606/605/843.png" },
-  { id: 4, name: "Publika Mont Kiara", address: "Lot 23A, Level G3, Publika Mall, 50480 Kuala Lumpur", phone: "03-6211 8888", state: "Kuala Lumpur", image: "https://via.placeholder.com/300" },
-  { id: 5, name: "Gurney Plaza", address: "170, 2nd Floor, Plaza Gurney, 10250 Georgetown, Penang", phone: "04-229 9988", state: "Penang", image: "https://via.placeholder.com/300" },
-  { id: 6, name: "Sunway Pyramid", address: "Lot F1.27, 1st Floor, Sunway Pyramid, 46150 Petaling Jaya", phone: "03-7491 9988", state: "Selangor", image: "https://via.placeholder.com/300" },
+  { id: 2, name: "1 Utama Damansara", address: "Lot S-215, 2nd Floor, 1 Utama Shopping Centre, 47800 Petaling Jaya", phone: "03-7726 9988", state: "Selangor", image: "https://thegridasia.com/wp-content/uploads/2021/10/Action-Hair-Salon-Cover.jpg" },
+  { id: 3, name: "Mid Valley Megamall", address: "Lot S-233, 2nd Floor, Mid Valley City, 59200 Kuala Lumpur", phone: "03-2283 8777", state: "Kuala Lumpur", image: "https://images.lifestyleasia.com/wp-content/uploads/2016/11/01225500/Hairplay-salon1.jpg" },
+  { id: 4, name: "Publika Mont Kiara", address: "Lot 23A, Level G3, Publika Mall, 50480 Kuala Lumpur", phone: "03-6211 8888", state: "Kuala Lumpur", image: "https://images.fresha.com/locations/location-profile-images/510491/2143207/268c8e6e-29b4-4a73-9da2-928bcbb340d4-EliNaturalHair-Centurion-ZA-Gauteng-Centurion-LytteltonManor-Fresha.jpg?class=width-small" },
+  { id: 5, name: "Gurney Plaza", address: "170, 2nd Floor, Plaza Gurney, 10250 Georgetown, Penang", phone: "04-229 9988", state: "Penang", image: "https://cdn1.treatwell.net/images/view/v2.i8386426.w1080.h720.x016C910F/" },
+  { id: 6, name: "Sunway Pyramid", address: "Lot F1.27, 1st Floor, Sunway Pyramid, 46150 Petaling Jaya", phone: "03-7491 9988", state: "Selangor", image: "https://images.fresha.com/locations/location-profile-images/654705/2520280/7b2748d7-a627-43d4-ae6e-4763c972a41f.jpg?class=width-small" },
 ];
 
 const Contact: React.FC = () => {
@@ -32,8 +32,8 @@ const Contact: React.FC = () => {
   return (
     <div className="container mt-5">
       {/* Header Image */}
-      <div className="text-center">
-        <img src={timelessstyle2} height="400" alt="Branch Header" className="me-4" />
+      <div className="bg text-center">
+        <img src={timelessstyle2} height="200" alt="Branch Header" className="me-4" />
       </div>
 
 

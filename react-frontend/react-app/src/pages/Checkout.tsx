@@ -42,7 +42,7 @@ const Checkout = () => {
     setError('');
 
     try {
-      // For now, we'll just simulate a successful order
+      // Simulate a successful order because theres no time to actually implement Stripe + a real payment gateway is out of scope for a uni project
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Clear cart and redirect to home with success message
@@ -141,7 +141,7 @@ const Checkout = () => {
                 
                 <button 
                   type="submit" 
-                  className="btn btn-primary w-100 mt-4"
+                  className="btn btn-dark w-100 mt-4"
                   disabled={loading}
                 >
                   {loading ? (

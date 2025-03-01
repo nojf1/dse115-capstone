@@ -42,7 +42,7 @@ const Cart = () => {
           <div className="card-body text-center p-5">
             <h2 className="mb-4">Your Cart is Empty</h2>
             <p>Looks like you haven't added any products to your cart yet.</p>
-            <Link to="/products" className="btn btn-primary">Browse Products</Link>
+            <Link to="/products" className="btn btn-dark">Browse Products</Link>
           </div>
         </div>
       </div>
@@ -145,7 +145,7 @@ const Cart = () => {
           </div>
           
           <div className="d-flex justify-content-between">
-            <Link to="/products" className="btn btn-outline-primary">
+            <Link to="/products" className="btn btn-outline-dark">
               Continue Shopping
             </Link>
             <button 
@@ -177,7 +177,7 @@ const Cart = () => {
                 <strong>${Number(cart.total || 0).toFixed(2)}</strong>
               </div>
               <button 
-                className="btn btn-primary w-100"
+                className="btn btn-dark w-100"
                 onClick={handleCheckout}
               >
                 Proceed to Checkout
