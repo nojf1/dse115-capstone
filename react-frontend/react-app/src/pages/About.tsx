@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, KeyboardEvent } from "react";
 import { useStylistData } from "../services/StylistService";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
@@ -6,13 +6,25 @@ import trophy1 from '../assets/trophy_1-removebg-preview.png';
 import trophy2 from '../assets/trophy_2-removebg-preview.png';
 import trophy3 from '../assets/trophy_3-removebg-preview.png';
 
-const About = () => {
-  const [activeSection, setActiveSection] = useState("about");
-  const { stylists, loading, error } = useStylistData();
-  const [loadedImages, setLoadedImages] = useState<{ [key: string]: boolean }>({});
-  const [selectedStylist, setSelectedStylist] = useState<any>(null);
+// Define the Stylist interface for proper TypeScript typing
+interface Stylist {
+  stylist_id: number;
+  name: string;
+  profile_picture?: string;
+  expertise?: string;
+  experience_years?: number;
+  education?: string;
+  career_interest?: string;
+  description?: string;
+}
 
-  // Debug the fetched stylists data to ensure all fields are present
+const About = () => {
+  const [activeSection, setActiveSection] = useState<"about" | "timeline" | "stylists">("about");
+  const { stylists, loading, error } = useStylistData();
+  const [loadedImages, setLoadedImages] = useState<{ [key: number]: boolean }>({});
+  const [selectedStylist, setSelectedStylist] = useState<Stylist | null>(null);
+
+  // Debug the fetched stylists data
   console.log("Fetched stylists:", stylists);
 
   const handleImageError = (stylistId: number) => {
@@ -29,12 +41,19 @@ const About = () => {
     }));
   };
 
-  const openModal = (stylist: any) => {
+  const openModal = (stylist: Stylist) => {
     setSelectedStylist(stylist);
   };
 
   const closeModal = () => {
     setSelectedStylist(null);
+  };
+
+  // Handle keyboard accessibility for modal (close on Esc)
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape") {
+      closeModal();
+    }
   };
 
   return (
@@ -114,7 +133,7 @@ const About = () => {
       {/* Competition Timeline Section */}
       {activeSection === "timeline" && (
         <div className="fade show timeline-section">
-          <h2 className="text-center mb-4">Competition Timeline</h2>
+          <h2 className="text-center mb-4 text-white">Competition Timeline</h2>
           <div className="timeline">
             <div className="row g-4">
               <div className="col-md-4">
@@ -153,12 +172,12 @@ const About = () => {
 
       {/* Stylists Section */}
       {activeSection === "stylists" && (
-        <div className="fade show">
-          <h2 className="text-center mb-4">Meet Our Stylists</h2>
-          {loading && <div className="text-center">Loading stylists...</div>}
+        <div className="fade show stylists-section">
+          <h2 className="text-center mb-4 text-black">Meet Our Stylists</h2>
+          {loading && <div className="text-center text-dark">Loading stylists...</div>}
           {error && <div className="alert alert-danger">{error}</div>}
           <div className="row g-4">
-            {stylists.map((stylist: any) => (
+            {stylists.map((stylist: Stylist) => (
               <div key={stylist.stylist_id} className="col-md-4">
                 <div className="card h-100" onClick={() => openModal(stylist)} style={{ cursor: "pointer" }}>
                   <div
@@ -184,6 +203,7 @@ const About = () => {
                         }}
                         onError={() => handleImageError(stylist.stylist_id)}
                         onLoad={() => handleImageLoad(stylist.stylist_id)}
+                        loading="lazy"
                       />
                     ) : (
                       <div className="text-center p-4">
@@ -230,11 +250,12 @@ const About = () => {
           tabIndex={-1}
           role="dialog"
           style={{ background: "rgba(0,0,0,0.5)" }}
+          onKeyDown={handleKeyDown}
+          aria-labelledby="stylistModalLabel"
         >
           <div className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
-              {/* Removed the modal-header to eliminate the name and "X" button */}
-              <div className="modal-body text-center">
+              <div className="modal-body text-center" id="stylistModalLabel">
                 <img
                   src={selectedStylist.profile_picture || "https://via.placeholder.com/250"}
                   alt={selectedStylist.name}
