@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-catch */
 import { useState, useEffect } from 'react';
-import { memberService, api } from '../services/MemberService';
+import { api } from '../services/MemberService';
 
 interface StylistData {
   name: string;
@@ -105,10 +105,14 @@ export const useStylistData = () => {
     try {
       setLoading(true);
       const response = await stylistService.getAllStylists();
-      setStylists(response.stylists);
+      console.log("API Response from /stylists/all:", response);
+      // Handle both array and object responses
+      const fetchedStylists = Array.isArray(response) ? response : response.stylists || [];
+      setStylists(fetchedStylists);
       setError(null);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch stylists');
+      console.error("Error fetching stylists:", err);
     } finally {
       setLoading(false);
     }

@@ -9,6 +9,9 @@ interface StylistAttributes {
   experience_years?: number;
   profile_picture?: string;
   created_at?: Date;
+  education?: string;      // Add education
+  career_interest?: string; // Add career_interest
+  description?: string;    // Add description
 }
 
 // Extend Sequelize's Model class
@@ -19,6 +22,9 @@ class Stylist extends Model<StylistAttributes> implements StylistAttributes {
   public experience_years!: number;
   public profile_picture!: string;
   public readonly created_at!: Date;
+  public education!: string;      // Add education
+  public career_interest!: string; // Add career_interest
+  public description!: string;    // Add description
 }
 
 // Initialize the model
@@ -49,6 +55,18 @@ Stylist.init(
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
+    },
+    education: { // Add education field
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    career_interest: { // Add career_interest field
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    description: { // Add description field
+      type: DataTypes.TEXT, // Use TEXT for longer descriptions
+      allowNull: true,
     },
   },
   {

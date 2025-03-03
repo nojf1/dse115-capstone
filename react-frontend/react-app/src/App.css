@@ -1,23 +1,27 @@
 /* Custom CSS Here */
-
 @import "https://unpkg.com/open-props";
 
 * {
   box-sizing: border-box;
 }
 
+/* Global Adjustments */
+body {
+  background-color: #FFFFFF; /* White background for the entire site */
+  color: #121212; /* Dark gray (used as black) text as default */
+}
 
-
+/* Custom Button (adjusted for white/dark-gray/gold theme) */
 .custom-button {
   font-family: var(--font-sans);
   font-weight: var(--font-weight-6);
   font-size: var(--font-size-1.6);
-  color: var(--gray-8);
-  background: var(--gray-0);
-  border: 0;
+  color: #121212; /* Dark gray text */
+  background: #FFFFFF; /* White background */
+  border: 2px solid #e3c667; /* Gold border */
   padding: var(--size-2) var(--size-4);
   transform: translateY(calc(var(--y, 0) * 1%)) scale(var(--scale));
-  transition: transform 0.1s;
+  transition: transform 0.1s, background-color 0.3s ease, color 0.3s ease;
   position: relative;
 }
 
@@ -25,6 +29,8 @@
   --y: -10;
   --scale: 1.1;
   --border-scale: 1;
+  background-color: #e3c667; /* Gold background on hover */
+  color: #121212; /* Dark gray text on hover */
 }
 
 .custom-button:active {
@@ -37,7 +43,7 @@
   content: "";
   position: absolute;
   inset: calc(var(--size-3) * -1);
-  border: var(--size-2) solid var(--gray-2);
+  border: var(--size-2) solid #e3c667; /* Gold border */
   transform: scale(var(--border-scale, 0));
   transition: transform 0.125s;
   
@@ -61,8 +67,7 @@
   z-index: -1;
 }
 
-
-/* image loading */
+/* Image Loading */
 .card-img-wrapper {
   background-color: #f8f9fa;
   position: relative;
@@ -88,34 +93,226 @@
   opacity: 1;
 }
 
-/* About section */
+.card-body-timeline {
+  text-align: center;
+}
+
+/* About Section (updated for dark background in "About Us" tab) */
 .about-section {
-  background-color: #121212; 
+  background-color: #121212; /* Dark gray background for About Us tab */
   padding: 40px;
-  border: 6px solid #e3c667; 
+  border: 4px solid #e3c667; /* Gold border */
   border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .text-gold {
-  color: #d4af37; 
+  color: #e3c667; /* Gold for headings */
 }
 
 .about-section h2,
-.about-section h4,
+.about-section h4 {
+  color: #e3c667; /* Gold for headings */
+}
+
 .about-section p,
 .about-section ul {
-  color: white;
+  color: #FFFFFF; /* White text for readability on dark background */
 }
 
 .about-section ul li {
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
 }
 
+/* Competition Timeline Section (keep white background) */
+.timeline-section {
+  background-color: #FFFFFF; /* White background */
+  color: #121212; /* Dark gray text */
+  padding: 30px;
+  border: 4px solid #e3c667; /* Gold border */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
 
-/* Services Page Styles */
+.trophy-icon {
+  width: 150px;
+  height: auto;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)); /* Shadow for trophies */
+}
+
+/* Timeline card styles */
+.card-body-timeline {
+  text-align: center;
+  background-color: #FFFFFF; /* White background */
+  border: 2px solid #e3c667; /* Gold border */
+  border-radius: 8px;
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add hover effect */
+}
+
+.card-body-timeline:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(227, 198, 103, 0.2); /* Gold shadow on hover */
+}
+
+.card-body-timeline h5,
+.card-body-timeline p {
+  color: #121212; /* Dark gray text */
+}
+
+/* Stylists Section (keep white background) */
+.stylists-section {
+  background-color: #FFFFFF; /* White background */
+  padding: 30px;
+  border: 4px solid #e3c667; /* Gold border */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.stylists-section h2 {
+  color: #e3c667; /* Gold heading */
+}
+
+/* Stylist card styles */
+.stylists-section .card {
+  background-color: #FFFFFF; /* White background */
+  border: 2px solid #e3c667; /* Gold border */
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stylists-section .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(227, 198, 103, 0.2); /* Gold shadow on hover */
+}
+
+.stylists-section .card-img-wrapper {
+  background-color: #f8f9fa; /* Light gray for image background */
+  border-bottom: 2px solid #e3c667; /* Gold border */
+}
+
+.stylists-section .card-body {
+  color: #121212; /* Dark gray text */
+}
+
+.stylists-section .card-title {
+  color: #e3c667; /* Gold for stylist names */
+}
+
+.stylists-section .card-text {
+  color: #121212; /* Dark gray text */
+}
+
+/* Stylist card image overlay effect */
+.stylists-section .card-img-wrapper {
+  position: relative;
+}
+
+.stylists-section .card-img-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(227, 198, 103, 0.2); /* Gold overlay */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stylists-section .card:hover .card-img-wrapper::after {
+  opacity: 1;
+}
+
+/* Modal Styling (keep white background) */
+.about-stylist-modal .modal-content {
+  background-color: #FFFFFF; /* White background */
+  border: 3px solid #e3c667; /* Gold border */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.about-stylist-modal .modal-body {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 20px;
+  color: #121212; /* Dark gray text */
+  background-color: #FFFFFF; /* White background */
+  border-radius: 8px;
+}
+
+.about-stylist-modal .modal-body p {
+  color: #121212; /* Dark gray text */
+  margin-bottom: 10px;
+}
+
+.about-stylist-modal .modal-body strong {
+  color: #e3c667; /* Gold for labels */
+}
+
+.about-stylist-modal .modal-footer {
+  border-top: 2px solid #e3c667; /* Gold border */
+  background-color: #FFFFFF; /* White background */
+}
+
+.about-stylist-modal .btn-secondary {
+  background-color: #e3c667; /* Gold button */
+  border: none;
+  color: #121212; /* Dark gray text */
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.about-stylist-modal .btn-secondary:hover {
+  background-color: #d4af37; /* Slightly darker gold on hover */
+}
+
+/* Modal Image Border */
+.modal-stylist-photo {
+  width: 100%;
+  max-width: 300px;
+  max-height: 300px;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto 20px;
+  display: block;
+  border: 3px solid #e3c667; /* Gold border */
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Navigation Buttons (keep white background with dark gray text) */
+.about-nav-buttons .btn-group .btn {
+  background-color: #FFFFFF; /* White background */
+  color: #121212; /* Dark gray text */
+  border: 2px solid #e3c667; /* Gold border */
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.about-nav-buttons .btn-group .btn:hover {
+  background-color: #e3c667; /* Gold background on hover */
+  color: #121212; /* Dark gray text */
+  transform: translateY(-2px);
+}
+
+.about-nav-buttons .btn-group .btn-dark {
+  background-color: #e3c667; /* Gold background for active button */
+  color: #121212; /* Dark gray text */
+  border: 2px solid #e3c667;
+}
+
+.about-nav-buttons .btn-group .btn-dark:hover {
+  background-color: #d4af37; /* Slightly darker gold on hover */
+  color: #121212;
+  transform: translateY(-2px);
+}
+
+/* Services Page Styles (updated for dark background) */
 .service-category-title {
   position: relative;
-  color: #333;
+  color: #e3c667; /* Gold for headings on dark background */
   padding-bottom: 15px;
   margin-bottom: 30px;
 }
@@ -128,95 +325,115 @@
   transform: translateX(-50%);
   width: 60px;
   height: 3px;
-  background-color: #212529;
+  background-color: #e3c667; /* Gold underline */
 }
 
-.service-card {
+/* Assuming the Services page container has a specific class (e.g., .services-page) */
+.services-page {
+  background-color: #121212; /* Dark gray background */
+  padding-bottom: 2rem;
+}
+
+.services-page .service-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #FFFFFF; /* White background for cards to contrast with dark page */
 }
 
-.service-card:hover {
+.services-page .service-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 12px rgba(227, 198, 103, 0.2); /* Gold shadow on hover */
 }
 
-.service-price {
+.services-page .service-price {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #212529;
+  color: #121212; /* Dark gray text */
   margin: 1rem 0;
 }
 
-.service-card .btn {
+.services-page .service-card .btn {
   transition: all 0.3s ease;
 }
 
-.service-card .btn:hover {
+.services-page .service-card .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-
-/* Products Page Styles */
+/* Products Page Styles (updated for dark background) */
 .product-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #FFFFFF; /* White background for cards */
 }
 
-.product-card:hover {
+/* Assuming the Products page container has a specific class (e.g., .products-page) */
+.products-page {
+  background-color: #121212; /* Dark gray background */
+  padding-bottom: 2rem;
+}
+
+.products-page .product-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 12px rgba(227, 198, 103, 0.2); /* Gold shadow on hover */
 }
 
-.product-price {
+.products-page .product-price {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #212529;
+  color: #121212; /* Dark gray text */
   margin: 1rem 0;
 }
 
-.product-image-wrapper img {
+.products-page .product-image-wrapper img {
   transition: transform 0.3s ease;
 }
 
-.product-image-wrapper:hover img {
+.products-page .product-image-wrapper:hover img {
   transform: scale(1.05);
 }
 
-.product-detail-image {
+.products-page .product-detail-image {
   max-height: 300px;
   width: 100%;
   object-fit: cover;
   border-radius: 8px;
 }
 
-.product-details {
-  background-color: #f8f9fa;
+.products-page .product-details {
+  background-color: #FFFFFF; /* White background */
   padding: 1rem;
   border-radius: 8px;
   margin-top: 1rem;
+  color: #121212; /* Dark gray text */
 }
 
 .modal-backdrop {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(18, 18, 18, 0.5); /* Dark gray backdrop */
 }
 
 .modal.show {
   display: block;
 }
 
+/* Global btn-group styles (keep white background with dark gray text) */
 .btn-group .btn {
   transition: all 0.3s ease;
+  background-color: #FFFFFF; /* White background */
+  color: #121212; /* Dark gray text */
+  border: 2px solid #e3c667; /* Gold border */
 }
 
 .btn-group .btn:hover {
   transform: translateY(-2px);
+  background-color: #e3c667; /* Gold background on hover */
+  color: #121212; /* Dark gray text */
 }
 
-/* Booking Page Styles */
+/* Booking Page Styles (unchanged, but adjusted colors) */
 .booking-card {
   border-radius: 15px;
   border: none;
@@ -225,13 +442,13 @@
 
 .form-control:focus,
 .form-select:focus {
-  border-color: #212529;
-  box-shadow: 0 0 0 0.2rem rgba(33, 37, 41, 0.25);
+  border-color: #121212; /* Dark gray border */
+  box-shadow: 0 0 0 0.2rem rgba(18, 18, 18, 0.25); /* Dark gray shadow */
 }
 
 .form-label {
   font-weight: 500;
-  color: #495057;
+  color: #121212; /* Dark gray */
 }
 
 .form-control,
@@ -244,29 +461,34 @@
 
 .form-control:hover,
 .form-select:hover {
-  border-color: #212529;
+  border-color: #121212; /* Dark gray */
 }
 
 textarea.form-control {
   resize: vertical;
 }
 
+/* Adjust btn-dark globally for white/dark-gray/gold theme */
 .btn-dark {
   padding: 12px 24px;
   font-weight: 500;
   letter-spacing: 0.5px;
+  background-color: #e3c667; /* Gold background */
+  color: #121212; /* Dark gray text */
+  border: none;
   transition: all 0.3s ease;
 }
 
 .btn-dark:hover {
   transform: translateY(-2px);
+  background-color: #d4af37; /* Slightly darker gold on hover */
+  color: #121212;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-
-/* Gallery-specific styles */
+/* Gallery-specific styles (adjusted colors) */
 .ts-gallery-container {
-  background-color: #f8f9fa;
+  background-color: #FFFFFF; /* White background */
   min-height: 100vh;
   padding: 2rem 0;
 }
@@ -280,8 +502,8 @@ textarea.form-control {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
+  background: rgba(18, 18, 18, 0.5); /* Dark gray background */
+  color: #FFFFFF; /* White text */
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -296,7 +518,7 @@ textarea.form-control {
 }
 
 .ts-gallery-arrow:hover {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(18, 18, 18, 0.8); /* Darker gray on hover */
 }
 
 .ts-gallery-arrow.prev {
@@ -337,8 +559,8 @@ textarea.form-control {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
+  background: rgba(18, 18, 18, 0.7); /* Dark gray background */
+  color: #FFFFFF; /* White text */
   padding: 15px;
   transform: translateY(100%);
   transition: transform 0.3s ease;
@@ -354,7 +576,7 @@ textarea.form-control {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(18, 18, 18, 0.9); /* Dark gray background */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -376,7 +598,7 @@ textarea.form-control {
   right: 10px;
   background: none;
   border: none;
-  color: white;
+  color: #FFFFFF; /* White text */
   font-size: 30px;
   cursor: pointer;
   z-index: 1;
@@ -395,8 +617,8 @@ textarea.form-control {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
+  background: rgba(18, 18, 18, 0.7); /* Dark gray background */
+  color: #FFFFFF; /* White text */
   padding: 15px;
   margin: 0;
   text-align: center;
@@ -410,17 +632,17 @@ textarea.form-control {
 .ts-gallery-section hr {
   width: 100px;
   margin: 1rem auto;
-  border-top: 3px solid #000;
+  border-top: 3px solid #121212; /* Dark gray */
   opacity: 0.8;
 }
 
 .ts-gallery-section h3 {
-  color: #333;
+  color: #121212; /* Dark gray */
   font-size: 2.5rem;
   margin-bottom: 2rem;
 }
 
-/* Profile Page Styles */
+/* Profile Page Styles (adjusted colors) */
 .profile-info h5 {
   color: #666;
   font-size: 0.9rem;
@@ -431,6 +653,7 @@ textarea.form-control {
 .profile-info p {
   font-size: 1.1rem;
   margin-bottom: 1.5rem;
+  color: #121212; /* Dark gray */
 }
 
 .guide-hero-section {
@@ -450,7 +673,7 @@ textarea.form-control {
   bottom: 0;
 }
 
-/* Media query for different screen sizes */
+/* Media query for different screen sizes (unchanged) */
 @media (max-width: 768px) {
   .guide-hero-section {
     height: 50vh; /* Smaller height on mobile devices */
@@ -460,5 +683,25 @@ textarea.form-control {
 @media (min-width: 1920px) {
   .guide-hero-section {
     background-size: cover; /* Switch to cover for very large screens */
+  }
+}
+
+/* Responsive adjustments for About page */
+@media (max-width: 768px) {
+  .about-section,
+  .timeline-section,
+  .stylists-section {
+    padding: 20px;
+    border-width: 3px; /* Slightly thinner border on mobile */
+  }
+
+  .modal-stylist-photo {
+    max-width: 200px;
+    max-height: 200px;
+  }
+
+  .about-nav-buttons .btn-group .btn {
+    font-size: 0.9rem;
+    padding: 8px 12px;
   }
 }

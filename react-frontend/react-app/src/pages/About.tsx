@@ -2,15 +2,19 @@ import { useState } from "react";
 import { useStylistData } from "../services/StylistService";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
+import trophy1 from '../assets/trophy_1-removebg-preview.png';
+import trophy2 from '../assets/trophy_2-removebg-preview.png';
+import trophy3 from '../assets/trophy_3-removebg-preview.png';
 
 const About = () => {
   const [activeSection, setActiveSection] = useState("about");
   const { stylists, loading, error } = useStylistData();
-  const [loadedImages, setLoadedImages] = useState<{ [key: string]: boolean }>(
-    {}
-  );
+  const [loadedImages, setLoadedImages] = useState<{ [key: string]: boolean }>({});
+  const [selectedStylist, setSelectedStylist] = useState<any>(null);
 
-  // Image error handler
+  // Debug the fetched stylists data to ensure all fields are present
+  console.log("Fetched stylists:", stylists);
+
   const handleImageError = (stylistId: number) => {
     setLoadedImages((prev) => ({
       ...prev,
@@ -18,12 +22,19 @@ const About = () => {
     }));
   };
 
-  // Image load handler
   const handleImageLoad = (stylistId: number) => {
     setLoadedImages((prev) => ({
       ...prev,
       [stylistId]: true,
     }));
+  };
+
+  const openModal = (stylist: any) => {
+    setSelectedStylist(stylist);
+  };
+
+  const closeModal = () => {
+    setSelectedStylist(null);
   };
 
   return (
@@ -102,13 +113,14 @@ const About = () => {
 
       {/* Competition Timeline Section */}
       {activeSection === "timeline" && (
-        <div className="fade show">
+        <div className="fade show timeline-section">
           <h2 className="text-center mb-4">Competition Timeline</h2>
           <div className="timeline">
             <div className="row g-4">
               <div className="col-md-4">
                 <div className="card h-100">
-                  <div className="card-body">
+                  <div className="card-body-timeline">
+                    <img src={trophy1} alt="Trophy 1" className="trophy-icon" />
                     <h5 className="card-title">2023</h5>
                     <p className="card-text">
                       National Hairstyling Excellence Award
@@ -118,7 +130,8 @@ const About = () => {
               </div>
               <div className="col-md-4">
                 <div className="card h-100">
-                  <div className="card-body">
+                  <div className="card-body-timeline">
+                    <img src={trophy2} alt="Trophy 2" className="trophy-icon" />
                     <h5 className="card-title">2022</h5>
                     <p className="card-text">Best Salon Innovation Award</p>
                   </div>
@@ -126,7 +139,8 @@ const About = () => {
               </div>
               <div className="col-md-4">
                 <div className="card h-100">
-                  <div className="card-body">
+                  <div className="card-body-timeline">
+                    <img src={trophy3} alt="Trophy 3" className="trophy-icon" />
                     <h5 className="card-title">2021</h5>
                     <p className="card-text">Rising Star Salon Award</p>
                   </div>
@@ -146,7 +160,7 @@ const About = () => {
           <div className="row g-4">
             {stylists.map((stylist: any) => (
               <div key={stylist.stylist_id} className="col-md-4">
-                <div className="card h-100">
+                <div className="card h-100" onClick={() => openModal(stylist)} style={{ cursor: "pointer" }}>
                   <div
                     className="card-img-wrapper"
                     style={{
@@ -157,7 +171,7 @@ const About = () => {
                   >
                     {stylist.profile_picture ? (
                       <img
-                        src={stylist.profile_picture} // Use URL directly
+                        src={stylist.profile_picture}
                         className={`card-img-top ${
                           loadedImages[stylist.stylist_id] ? "show" : "hide"
                         }`}
@@ -205,6 +219,51 @@ const About = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Modal for Stylist Details */}
+      {selectedStylist && (
+        <div
+          className="modal show d-block about-stylist-modal"
+          tabIndex={-1}
+          role="dialog"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-lg" role="document">
+            <div className="modal-content">
+              {/* Removed the modal-header to eliminate the name and "X" button */}
+              <div className="modal-body text-center">
+                <img
+                  src={selectedStylist.profile_picture || "https://via.placeholder.com/250"}
+                  alt={selectedStylist.name}
+                  className="modal-stylist-photo"
+                />
+                <p>
+                  <strong>Experience:</strong> {selectedStylist.experience_years} years
+                </p>
+                <p>
+                  <strong>Expertise:</strong> {selectedStylist.expertise || "Not specified"}
+                </p>
+                <p>
+                  <strong>Education:</strong> {selectedStylist.education || "Not specified"}
+                </p>
+                <p>
+                  <strong>Career Interest:</strong>{" "}
+                  {selectedStylist.career_interest || "Not specified"}
+                </p>
+                <p>
+                  <strong>Description:</strong>{" "}
+                  {selectedStylist.description || "Not specified"}
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={closeModal}>
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
