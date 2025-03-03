@@ -475,3 +475,28 @@ textarea.form-control {
     background-size: cover; /* Switch to cover for very large screens */
   }
 }
+
+.responsive-iframe {
+  width: 100%;
+  max-width: 1300px;
+  height: 550px;
+}
+
+@media (max-width: 768px) {
+  .responsive-iframe {
+    height: 300px;
+  }
+}
+
+/* Add to App.css */
+.home-page {
+  overflow-x: hidden;  /* Prevent horizontal scroll */
+  width: 100%;
+  position: relative;
+}
+
+.container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+  overflow-x: hidden;
+}

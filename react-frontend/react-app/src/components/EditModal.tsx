@@ -6,7 +6,7 @@ interface EditModalProps {
   onClose: () => void;
   onSave: (data: Member | Service | Stylist | Appointment | GalleryImage) => void;
   item: Member | Service | Stylist | Appointment | GalleryImage | null;
-  type: 'member' | 'service' | 'stylist' | 'appointment' | 'gallery'; 
+  type: 'member' | 'service' | 'stylist' | 'appointment' | 'gallery' | 'product'; 
   isCreating: boolean;
 }
 
@@ -43,6 +43,10 @@ type FormDataType = {
   image_url?: string;
   caption?: string;
   uploaded_at?: Date;
+
+  // Product fields
+  category?: string;
+  stock_quantity?: number;
 };
 
 const EditModal: React.FC<EditModalProps> = ({ show, onClose, onSave, item, type, isCreating }) => {
@@ -94,6 +98,18 @@ const EditModal: React.FC<EditModalProps> = ({ show, onClose, onSave, item, type
           image_url: formData.image_url,
           caption: formData.caption
         } as GalleryImage);
+        break;
+      // Add the product case
+      case 'product':
+        onSave({
+          id: formData.id,
+          name: formData.name,
+          description: formData.description,
+          price: Number(formData.price),
+          category: formData.category,
+          stock_quantity: Number(formData.stock_quantity),
+          image_url: formData.image_url
+        } as Product);
         break;
     }
   };
@@ -367,6 +383,74 @@ const EditModal: React.FC<EditModalProps> = ({ show, onClose, onSave, item, type
                 value={formData.caption || ""}
                 onChange={handleInputChange}
                 placeholder="Enter image caption"
+              />
+            </div>
+          </>
+        );
+      case 'product':
+        return (
+          <>
+            <div className="mb-3">
+              <label className="form-label">Name</label>
+              <input
+                type="text"
+                className="form-control"
+                name="name"
+                value={formData.name || ''}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Category</label>
+              <input
+                type="text"
+                className="form-control"
+                name="category"
+                value={formData.category || ''}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Price</label>
+              <input
+                type="number"
+                className="form-control"
+                name="price"
+                value={formData.price || ''}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Stock Quantity</label>
+              <input
+                type="number"
+                className="form-control"
+                name="stock_quantity"
+                value={formData.stock_quantity || ''}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Image URL</label>
+              <input
+                type="text"
+                className="form-control"
+                name="image_url"
+                value={formData.image_url || ''}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Description</label>
+              <textarea
+                className="form-control"
+                name="description"
+                value={formData.description || ''}
+                onChange={handleInputChange}
               />
             </div>
           </>

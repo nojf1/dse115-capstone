@@ -6,10 +6,11 @@ import { serviceService } from "../services/ServicesService";
 import { stylistService } from "../services/StylistService";
 import { bookingService } from "../services/BookingService";
 import { galleryService } from "../services/GalleryService";
+import { productService } from "../services/ProductService";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../App.css";
 import EditModal from '../components/EditModal';
-import { Member, Service, Stylist, Appointment, GalleryImage } from '../types';
+import { Member, Service, Stylist, Appointment, GalleryImage, Product } from '../types';
 import { CreateGalleryImage, UpdateGalleryImage } from '../services/GalleryService';
 
 const Admin = () => {
@@ -21,9 +22,10 @@ const Admin = () => {
   const [stylists, setStylists] = useState<Stylist[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [gallery, setGallery] = useState<GalleryImage[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [editItem, setEditItem] = useState<Member | Service | Stylist | Appointment | GalleryImage | null>(null);
+  const [editItem, setEditItem] = useState<Member | Service | Stylist | Appointment | GalleryImage | Product | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
 
@@ -84,6 +86,10 @@ const Admin = () => {
             setGallery([]);
           }
           break;
+        case "products":
+          const productsData = await productService.getAllProducts();
+          setProducts(productsData.products);
+          break;
       }
     } catch (error: any) {
       console.error('Error fetching data:', error);
@@ -99,7 +105,7 @@ const Admin = () => {
     setShowModal(true);
   };
 
-  const handleEdit = (item: Member | Service | Stylist | Appointment | GalleryImage) => {
+  const handleEdit = (item: Member | Service | Stylist | Appointment | GalleryImage | Product) => {
     setIsCreating(false);
     setEditItem(item);
     setShowModal(true);
@@ -127,6 +133,9 @@ const Admin = () => {
           break;
         case "appointments":
           await bookingService.updateAppointment(updatedData.appointment_id, updatedData);
+          break;
+        case "products":
+          await productService.updateProduct(updatedData.id, updatedData);
           break;
       }
       setShowModal(false);
@@ -159,6 +168,9 @@ const Admin = () => {
           };
           await galleryService.createImage(galleryData);
           break;
+        case "products":
+          await productService.createProduct(newData);
+          break;
       }
       setShowModal(false);
       fetchData();
@@ -187,6 +199,9 @@ const Admin = () => {
           break;
         case "gallery":
           await galleryService.deleteImage(id);
+          break;
+        case "products":
+          await productService.deleteProduct(id);
           break;
       }
       fetchData();
@@ -447,6 +462,62 @@ const Admin = () => {
             </tbody>
           </table>
         );
+
+      case "products":
+        return (
+          <table className="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((product) => (
+                <tr key={product.id}>
+                  <td>{product.id}</td>
+                  <td>
+                    {product.image_url ? (
+                      <img
+                        src={product.image_url}
+                        alt={product.name}
+                        className="img-thumbnail"
+                        style={{ maxHeight: '50px' }}
+                      />
+                    ) : (
+                      <span className="text-muted">No image</span>
+                    )}
+                  </td>
+                  <td>{product.name}</td>
+                  <td>{product.category}</td>
+                  <td>RM{formatPrice(product.price)}</td>
+                  <td>{product.stock_quantity}</td>
+                  <td>
+                    <div className="btn-group">
+                      <button
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => handleEdit(product)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleDelete(product.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        );
     }
   };
 
@@ -496,6 +567,14 @@ const Admin = () => {
             Gallery
           </button>
         </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === "products" ? "active" : ""}`}
+            onClick={() => setActiveTab("products")}
+          >
+            Products
+          </button>
+        </li>
       </ul>
 
       {/* Action Buttons */}
@@ -534,7 +613,7 @@ const Admin = () => {
         onSave={isCreating ? handleSaveCreate : handleSave}
         item={editItem}
         // Don't slice the gallery type
-        type={activeTab === 'gallery' ? 'gallery' : activeTab.slice(0, -1) as 'member' | 'service' | 'stylist' | 'appointment' | 'gallery'}
+        type={activeTab === 'gallery' ? 'gallery' : activeTab.slice(0, -1) as 'member' | 'service' | 'stylist' | 'appointment' | 'gallery' | 'product'}
         isCreating={isCreating}
       />
     </div>

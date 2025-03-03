@@ -46,7 +46,15 @@ const Home = () => {
         <div className="container">
           <h2 className="mb-4">More than style, we care - bringing beauty and happiness to you!</h2>
           <hr/>
-          <iframe width="1300" height="550" src="https://www.youtube.com/embed/-FnrCZJw6TE" title="hair salon video" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+          <iframe 
+  className="responsive-iframe"
+  src="https://www.youtube.com/embed/-FnrCZJw6TE" 
+  title="hair salon video" 
+  frameBorder="0" 
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+  referrerPolicy="strict-origin-when-cross-origin" 
+  allowFullScreen
+></iframe>
         </div>
       </section>
 
@@ -109,6 +117,7 @@ const Home = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          overflow: "hidden",
         }}
       >
         <div
@@ -148,7 +157,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Gallery Section */}
+      {/* Gallery Section
       <section className="gallery py-5 bg-light text-center">
         <div className="container">
           <h2 className="mb-4">Style Inspiration</h2>
@@ -179,7 +188,7 @@ const Home = () => {
             Explore More Styles →
           </Link>
         </div>
-      </section>
+      </section> */}
 
 {/* Testimonials Section */}
 <section className="testimonials py-5" style={{ 
@@ -304,8 +313,13 @@ const Home = () => {
         <div className="container">
           <h2 className="mb-3">Ready for a New Look?</h2>
           <p>Book your appointment today and let us take care of your style.</p>
-          <Link to="/booking" className="btn btn-primary btn-lg mt-3">
-            Book Now
+          <br></br>
+          <Link
+            style={{ textDecoration: "none", color: "black" }}
+            to="/booking"
+          >
+            {" "}
+            <button className="custom-button">Book an Appointment</button>
           </Link>
         </div>
       </section>

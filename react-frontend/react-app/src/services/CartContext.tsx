@@ -49,6 +49,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [error, setError] = useState<string | null>(null);
   const { isAuthenticated } = useAuth();
 
+  // Add a refresh state
+  const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchCart();
@@ -63,10 +66,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [isAuthenticated]);
 
+  // Add effect to refetch cart when refresh changes
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchCart();
+    }
+  }, [isAuthenticated, refresh]);
+
   const fetchCart = async () => {
     if (!isAuthenticated) return;
     
     setLoading(true);
+    setError(null);
     
     try {
       const response = await api.get('/cart');
@@ -98,17 +109,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     
     try {
-      // Make sure api is imported correctly and using the right baseURL
-      const response = await api.post('/cart/add', { product_id: productId, quantity });
-      
-      // Update cart with new data
-      setCart(prev => ({
-        ...prev,
-        ...response.data.cart,
-        items: response.data.items || []
-      }));
-      
-      return response.data;
+      await api.post('/cart/add', { product_id: productId, quantity });
+      setRefresh(prev => !prev); // Toggle refresh to trigger refetch
+      return true;
     } catch (error) {
       console.error('Error adding to cart:', error);
       throw error;
@@ -125,19 +128,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       await api.delete(`/cart/item/${itemId}`);
-      // Update local state
-      setCart(prev => {
-        if (!prev) return null;
-        
-        const updatedItems = prev.items.filter(item => item.id !== itemId);
-        const updatedTotal = updatedItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-        
-        return {
-          ...prev,
-          items: updatedItems,
-          total: updatedTotal
-        };
-      });
+      setRefresh(prev => !prev);
     } catch (err) {
       console.error('Error removing from cart:', err);
       setError('Failed to remove product from cart');
@@ -156,9 +147,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       // First, update the item
       await api.put(`/cart/item/${itemId}`, { quantity });
-      
-      // Then fetch the entire cart with items
-      await fetchCart();
+      setRefresh(prev => !prev);
     } catch (err) {
       console.error('Error updating cart item:', err);
       setError('Failed to update cart item');
@@ -176,7 +165,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       await api.delete('/cart');
-      setCart(prev => prev ? { ...prev, items: [], total: 0 } : null);
+      setRefresh(prev => !prev);
     } catch (err) {
       console.error('Error clearing cart:', err);
       setError('Failed to clear cart');

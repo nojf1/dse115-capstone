@@ -53,12 +53,24 @@ const Contact: React.FC = () => {
       <div className="row">
         {filteredBranches.map((branch) => (
           <div key={branch.id} className="col-md-4 mb-4">
-            <div className="card shadow">
-              <img src={branch.image} alt={branch.name} className="card-img-top" /> {/* replace img src with branch.name later for specific images */} 
-              <div className="card-body">
+            <div className="card shadow h-100"> {/* Add h-100 for equal height cards */}
+              <div className="card-img-wrapper" style={{ height: "250px" }}> {/* Fixed height container */}
+                <img 
+                  src={branch.image} 
+                  alt={branch.name} 
+                  className="card-img-top" 
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    objectFit: "cover",
+                    objectPosition: "center",
+                  }}
+                /> 
+              </div>
+              <div className="card-body d-flex flex-column"> {/* Flexbox for content */}
                 <h5 className="card-title">{branch.name}</h5>
-                <p className="card-text">{branch.address}</p>
-                <p className="card-text"><strong>{branch.phone}</strong></p>
+                <p className="card-text flex-grow-1">{branch.address}</p>
+                <p className="card-text mb-0"><strong>{branch.phone}</strong></p>
               </div>
             </div>
           </div>

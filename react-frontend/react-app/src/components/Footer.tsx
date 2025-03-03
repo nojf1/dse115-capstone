@@ -74,9 +74,6 @@ const Footer = () => {
                 <i className="fab fa-instagram fa-2x"></i>
               </a>
             </div>
-            <Link className="text-decoration-none text-dark" to="/terms">
-              Terms & Conditions
-            </Link>
           </div>
         </div>
 

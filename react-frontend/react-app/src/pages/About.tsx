@@ -199,6 +199,7 @@ const About = () => {
                           height: "100%",
                           width: "100%",
                           objectFit: "cover",
+                          objectPosition: "top",
                           transition: "opacity 0.3s ease",
                         }}
                         onError={() => handleImageError(stylist.stylist_id)}

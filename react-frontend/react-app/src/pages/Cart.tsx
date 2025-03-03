@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../services/CartContext';
 import { useAuth } from '../services/AuthContext';
+import api from '../services/api';
 
 const Cart = () => {
   const { cart, loading, updateCartItem, removeFromCart, clearCart } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  // Add effect to fetch cart data when component mounts
+  useEffect(() => {
+    if (isAuthenticated) {
+      const fetchCart = async () => {
+        try {
+          await api.get('/cart');
+        } catch (error) {
+          console.error('Error fetching cart:', error);
+        }
+      };
+      fetchCart();
+    }
+  }, [isAuthenticated]);
   
   if (loading) {
     return (

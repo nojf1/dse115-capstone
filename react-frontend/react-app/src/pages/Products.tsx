@@ -9,9 +9,17 @@ interface ProductDetailsModalProps {
   product: any;
   show: boolean;
   onHide: () => void;
+  onAddToCart: (productId: number) => Promise<void>;
+  isAddingToCart: boolean;
 }
 
-const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, show, onHide }) => {
+const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ 
+  product, 
+  show, 
+  onHide,
+  onAddToCart,
+  isAddingToCart 
+}) => {
   if (!show) return null;
 
   return (
@@ -44,10 +52,24 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({ product, show
                 <p><strong>Stock:</strong> {product.stock_quantity} units</p>
               </div>
             </div>
-            <div className="modal-footer">
+            <div className="modal-footer d-flex justify-content-between">
+              <button 
+                className="btn btn-dark"
+                onClick={() => onAddToCart(product.product_id || product.id)}
+                disabled={isAddingToCart}
+              >
+                {isAddingToCart ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Adding...
+                  </>
+                ) : (
+                  'Add to Cart'
+                )}
+              </button>
               <button 
                 type="button" 
-                className="btn btn-dark" 
+                className="btn btn-outline-dark btn-lg" 
                 onClick={onHide}
               >
                 Close
@@ -198,6 +220,8 @@ const Products = () => {
         product={selectedProduct}
         show={!!selectedProduct}
         onHide={() => setSelectedProduct(null)}
+        onAddToCart={handleAddToCart}
+        isAddingToCart={!!selectedProduct && addingToCart[selectedProduct.product_id || selectedProduct.id]}
       />
     </div>
   );

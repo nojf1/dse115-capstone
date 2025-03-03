@@ -53,4 +53,17 @@ export interface GalleryImage {
   uploaded_at?: Date;
 }
 
-export type FormDataType = Member | Service | Stylist | Appointment | GalleryImage;
+export interface Product {
+  id?: number;
+  product_id?: number; // To handle both id formats
+  name: string;
+  description?: string;
+  price: number;
+  category: string;
+  stock_quantity: number;
+  image_url?: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
+
+export type FormDataType = Member | Service | Stylist | Appointment | GalleryImage | Product;
