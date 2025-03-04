@@ -388,10 +388,14 @@ const Profile = () => {
                             })}
                           </td>
                           <td>
-                            {appointment.service?.name || 'N/A'}
+                            {appointment.service?.name || 
+                              (appointment.Service && appointment.Service.name) || 
+                              'Loading...'}
                           </td>
                           <td>
-                            {appointment.stylist?.name || 'N/A'}
+                            {appointment.stylist?.name || 
+                              (appointment.Stylist && appointment.Stylist.name) || 
+                              'Loading...'}
                           </td>
                           <td>
                             <span className={`badge ${

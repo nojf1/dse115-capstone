@@ -53,7 +53,13 @@ export const bookingService = {
   getMyAppointments: async () => {
     try {
       const response = await api.get('/appointments/my-appointments');
-      return response.data;
+      const appointments = response.data.appointments.map((appointment: any) => ({
+        ...appointment,
+        stylist: appointment.Stylist || appointment.stylist,
+        service: appointment.Service || appointment.service,
+        status: appointment.status || 'Scheduled'
+      }));
+      return { appointments };
     } catch (error) {
       throw error;
     }

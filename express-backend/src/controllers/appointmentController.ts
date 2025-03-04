@@ -51,14 +51,21 @@ export const getMemberAppointments = async (req: Request, res: Response) => {
     const appointments = await Appointment.findAll({
       where: { member_id: memberId },
       include: [
-        { model: Stylist, attributes: ['name'] },
-        { model: Service, attributes: ['name', 'price'] }
-      ]
+        { 
+          model: Stylist,
+          attributes: ['name', 'stylist_id']
+        },
+        { 
+          model: Service,
+          attributes: ['name', 'service_id', 'price']
+        }
+      ],
+      order: [['appointment_date', 'DESC']]
     });
 
     res.status(200).json({
       message: "Appointments retrieved successfully",
-      appointments,
+      appointments
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
