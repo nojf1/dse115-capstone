@@ -1,11 +1,11 @@
 import React from 'react';
-import { Member, Service, Stylist, Appointment, GalleryImage } from '../types';
+import { Member, Service, Stylist, Appointment, GalleryImage, Product } from '../types';
 
 interface EditModalProps {
   show: boolean;
   onClose: () => void;
-  onSave: (data: Member | Service | Stylist | Appointment | GalleryImage) => void;
-  item: Member | Service | Stylist | Appointment | GalleryImage | null;
+  onSave: (data: Member | Service | Stylist | Appointment | GalleryImage | Product) => void;
+  item: Member | Service | Stylist | Appointment | GalleryImage | Product | null;
   type: 'member' | 'service' | 'stylist' | 'appointment' | 'gallery' | 'product'; 
   isCreating: boolean;
 }
