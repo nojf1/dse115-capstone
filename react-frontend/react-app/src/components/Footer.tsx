@@ -61,16 +61,16 @@ const Footer = () => {
           <div className="col-md-3 text-center">
             <h5><strong>Social Media</strong></h5>
             <div className="social-links mb-3">
-              <a href="#" className="text-dark me-3">
+              <a href="#" className="text-primary me-3">
                 <i className="fab fa-facebook fa-2x"></i>
               </a>
-              <a href="#" className="text-dark me-3">
+              <a href="#" className="text-info me-3">
                 <i className="fab fa-twitter fa-2x"></i>
               </a>
-              <a href="#" className="text-dark me-3">
+              <a href="#" className="text-success me-3">
                 <i className="fab fa-whatsapp fa-2x"></i>
               </a>
-              <a href="#" className="text-dark">
+              <a href="#" className="text-danger">
                 <i className="fab fa-instagram fa-2x"></i>
               </a>
             </div>

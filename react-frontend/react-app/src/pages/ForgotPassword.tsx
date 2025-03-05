@@ -60,7 +60,7 @@ const ForgotPassword = () => {
                 </div>
               )}
               
-              {/* Development only - display reset link for testing */}
+              {/* Development only - display reset link for testing
               {resetLink && (
                 <div className="alert alert-info" role="alert">
                   <p><strong>Development Mode:</strong> Use this link to reset your password:</p>
@@ -69,7 +69,7 @@ const ForgotPassword = () => {
                   </a>
                 </div>
               )}
-              
+               */}
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">Email Address</label>
@@ -88,7 +88,7 @@ const ForgotPassword = () => {
                 <div className="d-grid">
                   <button 
                     type="submit" 
-                    className="btn btn-primary"
+                    className="btn btn-dark"
                     disabled={loading}
                   >
                     {loading ? (

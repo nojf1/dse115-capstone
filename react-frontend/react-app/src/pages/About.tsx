@@ -75,7 +75,7 @@ const About = () => {
             }`}
             onClick={() => setActiveSection("timeline")}
           >
-            Competition Timeline
+            Competition Awards
           </button>
           <button
             className={`btn ${
@@ -133,7 +133,7 @@ const About = () => {
       {/* Competition Timeline Section */}
       {activeSection === "timeline" && (
         <div className="fade show timeline-section">
-          <h2 className="text-center mb-4 text-white">Competition Timeline</h2>
+          <h2 className="text-center mb-4 text-white">Competition Awards</h2>
           <div className="timeline">
             <div className="row g-4">
               <div className="col-md-4">

@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../services/AuthContext";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import timelessstyle from "../assets/timeless-style.png";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, register } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState("");
@@ -30,6 +31,13 @@ const Login: React.FC = () => {
     country: "",
   });
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('register') === 'true') {
+      setIsLogin(false);
+    }
+  }, [location]);
+
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -41,7 +49,7 @@ const Login: React.FC = () => {
       }
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to login");
+      setError(err.response?.data?.message || "Failed to login, wrong email or password");
     } finally {
       setLoading(false);
     }

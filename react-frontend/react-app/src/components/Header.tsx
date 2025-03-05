@@ -102,7 +102,7 @@ const Header = () => {
             ) : (
               <>
                 <li><Link className="dropdown-item" to="/login">Login</Link></li>
-                <li><Link className="dropdown-item" to="/register">Register</Link></li>
+                <li><Link to="/login?register=true" className="dropdown-item">Register</Link></li>
               </>
             )}
           </ul>

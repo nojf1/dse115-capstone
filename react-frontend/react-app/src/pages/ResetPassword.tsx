@@ -68,7 +68,7 @@ const ResetPassword = () => {
         </div>
         <div className="text-center mt-3">
           <button 
-            className="btn btn-primary" 
+            className="btn btn-dark" 
             onClick={() => navigate('/forgot-password')}
           >
             Try Again
@@ -128,7 +128,7 @@ const ResetPassword = () => {
                 <div className="d-grid">
                   <button 
                     type="submit" 
-                    className="btn btn-primary"
+                    className="btn btn-dark"
                     disabled={loading || success !== ''}
                   >
                     {loading ? (
